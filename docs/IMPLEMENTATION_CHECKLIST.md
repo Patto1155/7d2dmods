@@ -1,6 +1,8 @@
 # Logistics Network Implementation Checklist
 
 > For Hermes/coding agents: use `subagent-driven-development` for implementation. Dispatch focused subagents for reconnaissance, implementation, and review. Do not make one agent scan the whole game install repeatedly.
+>
+> See also: `docs/LOGISTICS_NETWORK_NEXT_STEPS.md` for the compact post-review milestone plan.
 
 ## Goal
 
