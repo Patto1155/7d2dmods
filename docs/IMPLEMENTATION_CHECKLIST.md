@@ -174,15 +174,15 @@ Expected: DLL builds or failure is documented in `docs/API_REFERENCE.md` / issue
 
 ## Phase 3: Port and generalize conduit blocks
 
-- [ ] Copy useful conduit block XML from `mods/AutoForge/Config/blocks.xml` into new mod config.
-- [ ] Rename internal ids away from `autoForgeConduit`.
-- [ ] Suggested id: `logisticsConduit`.
-- [ ] Copy/refactor `ConduitBlock.cs` into new mod source.
-- [ ] Rename namespace/classes away from AutoForge.
-- [ ] Preserve vanilla prefab approach initially.
-- [ ] Add conduit recipe to `Config/recipes.xml`.
-- [ ] Add localization entries.
-- [ ] Verify conduit appears/crafts/places in game.
+- [x] Copy useful conduit block XML from `mods/AutoForge/Config/blocks.xml` into new mod config.
+- [x] Rename internal ids away from `autoForgeConduit`.
+- [x] Suggested id: `logisticsConduit`.
+- [x] Copy/refactor `ConduitBlock.cs` into new mod source.
+- [x] Rename namespace/classes away from AutoForge.
+- [x] Preserve vanilla prefab approach initially.
+- [x] Add conduit recipe to `Config/recipes.xml`.
+- [x] Add localization entries.
+- [x] Verify conduit appears/crafts/places in game.
 - [ ] Commit conduit milestone.
 
 Verification:
@@ -194,18 +194,18 @@ Verification:
 
 ## Phase 4: Implement network scanner
 
-- [ ] Copy/refactor `ConduitNetwork.cs` into `Network/NetworkScanner.cs`.
-- [ ] Generalize scanner to start from any logistics block, not only AutoForge workstation.
-- [ ] Represent discovered network as `NetworkGraph`.
-- [ ] Track conduit positions.
+- [x] Copy/refactor `ConduitNetwork.cs` into `Network/NetworkScanner.cs`.
+- [x] Generalize scanner to start from any logistics block, not only AutoForge workstation.
+- [x] Represent discovered network as `NetworkGraph`.
+- [x] Track conduit positions.
 - [ ] Track connector positions.
-- [ ] Track adjacent storage endpoints.
-- [ ] Track adjacent workstation endpoints.
-- [ ] Add max scan depth constant.
-- [ ] Add loop/visited protection.
-- [ ] Add debug logging summary: conduits, connectors, storage endpoints, workstation endpoints.
+- [x] Track adjacent storage endpoints.
+- [x] Track adjacent workstation endpoints.
+- [x] Add max scan depth constant.
+- [x] Add loop/visited protection.
+- [x] Add debug logging summary: conduits, storage endpoints, workstation endpoints.
 - [ ] Add tests if a test harness can be created outside game runtime.
-- [ ] Otherwise add a deterministic debug command/log path for in-game verification.
+- [x] Otherwise add a deterministic debug command/log path for in-game verification.
 - [ ] Commit scanner milestone.
 
 Verification:

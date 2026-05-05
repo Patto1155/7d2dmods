@@ -4,6 +4,6 @@
     <DisplayName value="Wasteland Logistics" />
     <Version value="0.1.0" />
     <Author value="Patto1155" />
-    <Description value="Passive skeleton for a Wasteland Logistics network mod." />
+    <Description value="Passive logistics conduit and network scanner for Wasteland Logistics." />
     <Website value="" />
 </ModInfo>

@@ -1,5 +1,10 @@
 <configs>
   <append xpath="/recipes">
-    <!-- Placeholder for future LogisticsNetwork recipes. Intentionally empty in the passive skeleton. -->
+
+    <recipe name="logisticsConduit" count="4" craft_area="workbench" craft_time="5">
+      <ingredient name="resourceForgedIron" count="2"/>
+      <ingredient name="resourceScrapPolymers" count="1"/>
+    </recipe>
+
   </append>
 </configs>

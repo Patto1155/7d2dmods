@@ -1,6 +1,6 @@
 # Wasteland Logistics
 
-Passive skeleton mod for 7 Days to Die.
+Passive logistics-network milestone mod for 7 Days to Die.
 
 Internal assembly name: `LogisticsNetwork`
 Player-facing name: `Wasteland Logistics`
@@ -9,9 +9,11 @@ This is a clean sibling of the legacy AutoForge prototype. It currently provides
 
 - mod metadata
 - Harmony entry point
-- placeholder patch file
+- passive 2-second network scan tick
+- vanilla-prefab logistics conduit block
+- reusable conduit registry and BFS network scanner
 - minimal logging helper
-- empty config scaffolds for future blocks, recipes, localization, and UI hooks
+- config scaffolds for future routing, recipes, localization, and UI hooks
 
 It does not yet move items, automate workstations, or replace vanilla workstation UIs.
 
