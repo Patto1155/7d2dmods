@@ -1,0 +1,32 @@
+[
+  {
+    "id": "resourceForgedIron",
+    "display_name": "Forged Iron",
+    "source_file": "items.xml",
+    "stack_size": 500,
+    "value": 12,
+    "material": "MresourceForgedIron",
+    "group": null,
+    "notes": "Representative crafting resource."
+  },
+  {
+    "id": "resourceMechanicalParts",
+    "display_name": "Mechanical Parts",
+    "source_file": "items.xml",
+    "stack_size": 1000,
+    "value": 32,
+    "material": null,
+    "group": "Resources",
+    "notes": "Representative crafting resource."
+  },
+  {
+    "id": "resourceElectricParts",
+    "display_name": "Electric Parts",
+    "source_file": "items.xml",
+    "stack_size": 1000,
+    "value": 32,
+    "material": null,
+    "group": "Resources",
+    "notes": "Representative crafting resource."
+  }
+]

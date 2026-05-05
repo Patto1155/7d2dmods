@@ -1,0 +1,54 @@
+{
+  "dataset": "7dtd-vanilla",
+  "description": "Seed dataset for vanilla 7 Days to Die crafting and workstation metadata.",
+  "entities": {
+    "workstations": {
+      "primary_key": "id",
+      "fields": [
+        "id",
+        "display_name",
+        "source_file",
+        "block_class",
+        "crafting_area",
+        "ingredients",
+        "description_key",
+        "notes"
+      ]
+    },
+    "items": {
+      "primary_key": "id",
+      "fields": [
+        "id",
+        "display_name",
+        "source_file",
+        "stack_size",
+        "value",
+        "material",
+        "group",
+        "notes"
+      ]
+    },
+    "recipes": {
+      "primary_key": "id",
+      "fields": [
+        "id",
+        "output",
+        "count",
+        "craft_area",
+        "craft_time",
+        "ingredients",
+        "source_file",
+        "notes"
+      ]
+    }
+  },
+  "provenance": {
+    "source_files": [
+      "D:/Program Files (x86)/Steam/steamapps/common/7 Days To Die/Data/Config/blocks.xml",
+      "D:/Program Files (x86)/Steam/steamapps/common/7 Days To Die/Data/Config/items.xml",
+      "D:/Program Files (x86)/Steam/steamapps/common/7 Days To Die/Data/Config/recipes.xml",
+      "D:/Program Files (x86)/Steam/steamapps/common/7 Days To Die/Data/Config/Localization.txt"
+    ],
+    "seeded_from": "sub-agent inspection of vanilla 7DTD XML files"
+  }
+}

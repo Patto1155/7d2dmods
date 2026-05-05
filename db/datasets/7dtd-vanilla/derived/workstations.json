@@ -1,0 +1,137 @@
+[
+  {
+    "id": "campfire",
+    "display_name": "Campfire",
+    "source_file": "blocks.xml",
+    "block_class": null,
+    "crafting_area": "character",
+    "ingredients": [
+      {
+        "item": "Small Stone",
+        "count": 5
+      }
+    ],
+    "description_key": null,
+    "notes": "Basic early-game station; good template for simple network-enabled workstation behavior."
+  },
+  {
+    "id": "forge",
+    "display_name": "Forge",
+    "source_file": "blocks.xml",
+    "block_class": null,
+    "crafting_area": "character",
+    "ingredients": [
+      {
+        "item": "Cobblestone",
+        "count": 50
+      },
+      {
+        "item": "Wood Log",
+        "count": 1
+      },
+      {
+        "item": "Leather",
+        "count": 10
+      },
+      {
+        "item": "Duct Tape",
+        "count": 3
+      },
+      {
+        "item": "Pipe",
+        "count": 3
+      }
+    ],
+    "description_key": null,
+    "notes": "Good candidate for networked input/output because it already represents a specialized production station."
+  },
+  {
+    "id": "workbench",
+    "display_name": "Workbench",
+    "source_file": "blocks.xml",
+    "block_class": null,
+    "crafting_area": "character",
+    "ingredients": [
+      {
+        "item": "Forged Iron",
+        "count": 25
+      },
+      {
+        "item": "Mechanical Parts",
+        "count": 20
+      },
+      {
+        "item": "Duct Tape",
+        "count": 5
+      },
+      {
+        "item": "Nails",
+        "count": 100
+      },
+      {
+        "item": "Wood",
+        "count": 100
+      }
+    ],
+    "description_key": null,
+    "notes": "Best general-purpose endpoint for network-assisted crafting."
+  },
+  {
+    "id": "cementMixer",
+    "display_name": "Cement Mixer",
+    "source_file": "blocks.xml",
+    "block_class": null,
+    "crafting_area": "workbench",
+    "ingredients": [
+      {
+        "item": "Forged Iron",
+        "count": 25
+      },
+      {
+        "item": "Spring",
+        "count": 4
+      },
+      {
+        "item": "Engine",
+        "count": 1
+      },
+      {
+        "item": "Mechanical Parts",
+        "count": 10
+      }
+    ],
+    "description_key": null,
+    "notes": "Useful example of a more advanced machine that should still be network-linkable."
+  },
+  {
+    "id": "chemistryStation",
+    "display_name": "Chemistry Station",
+    "source_file": "blocks.xml",
+    "block_class": null,
+    "crafting_area": "workbench",
+    "ingredients": [
+      {
+        "item": "Beaker",
+        "count": 1
+      },
+      {
+        "item": "Forged Iron",
+        "count": 100
+      },
+      {
+        "item": "Cooking Pot",
+        "count": 3
+      },
+      {
+        "item": "Pipe",
+        "count": 30
+      },
+      {
+        "item": "Acid",
+        "count": 5
+      }
+    ],
+    "description_key": null,
+    "notes": "Good target for later automation of medicine/chemistry chains."
+  }
+]

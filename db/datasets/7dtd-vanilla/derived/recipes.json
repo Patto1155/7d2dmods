@@ -1,0 +1,48 @@
+[
+  {
+    "id": "autoForgeWorkstation",
+    "output": "Auto Forge",
+    "count": 1,
+    "craft_area": "workbench",
+    "craft_time": 60,
+    "ingredients": [
+      {
+        "item": "Forged Iron",
+        "count": 10
+      },
+      {
+        "item": "Mechanical Parts",
+        "count": 5
+      },
+      {
+        "item": "Electric Parts",
+        "count": 10
+      },
+      {
+        "item": "Scrap Polymers",
+        "count": 5
+      }
+    ],
+    "source_file": "mods/AutoForge/Config/recipes.xml",
+    "notes": "Existing mod recipe; kept as historical reference only."
+  },
+  {
+    "id": "autoForgeConduit",
+    "output": "Forge Conduit",
+    "count": 4,
+    "craft_area": "workbench",
+    "craft_time": 5,
+    "ingredients": [
+      {
+        "item": "Forged Iron",
+        "count": 2
+      },
+      {
+        "item": "Scrap Polymers",
+        "count": 1
+      }
+    ],
+    "source_file": "mods/AutoForge/Config/recipes.xml",
+    "notes": "Existing mod conduit recipe; likely candidate for redesign into a general-purpose network conduit."
+  }
+]
