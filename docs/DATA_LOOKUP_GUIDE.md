@@ -18,9 +18,11 @@ db/datasets/7dtd-vanilla/
   raw/
     provenance.md
   derived/
+    blocks.json
     items.json
     recipes.json
     workstations.json
+    localization.json
 ```
 
 ## Source of truth
@@ -36,14 +38,24 @@ Use the installed game XML, not Fandom/wiki pages, whenever possible:
 
 ## How future agents should use the dataset
 
-Before opening large XML files, check the derived JSON first.
+Before opening large XML files, use the helper scripts or the derived JSON first.
 
-Examples:
+Preferred commands:
+
+```bash
+python3 tools/validate_dataset.py
+python3 tools/extract_vanilla_data.py --check
+python3 tools/query_vanilla_data.py item resourceForgedIron
+python3 tools/query_vanilla_data.py workstation forge
+python3 tools/query_vanilla_data.py recipe workbench
+```
+
+Direct file lookups still work when you need a one-off inspection:
 
 - Need vanilla workstation ids? Read `derived/workstations.json`.
-- Need a starter item id? Read `derived/items.json`.
+- Need starter item ids? Read `derived/items.json`.
 - Need recipe structure? Read `derived/recipes.json` and `schema.json`.
-- Need provenance/source file? Read `raw/provenance.md`.
+- Need localization or provenance details? Read `derived/localization.json` and `raw/provenance.md`.
 
 Only return to the raw game XML when the needed field is missing or suspected stale.
 

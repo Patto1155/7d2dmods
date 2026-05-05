@@ -105,22 +105,22 @@ Expected: clean or only intentional doc/source changes.
 
 Purpose: prevent future agents from repeatedly scraping XML/wiki.
 
-- [ ] Create root-level `tools/extract_vanilla_data.py` or equivalent script. Root-level means `/mnt/c/Users/Administrator/source/repos/7d2dmods/tools/`, not inside `db/` or a mod folder.
-- [ ] Script reads vanilla XML from `/mnt/d/Program Files (x86)/Steam/steamapps/common/7 Days To Die/Data/Config/`.
-- [ ] Parse `items.xml` into `db/datasets/7dtd-vanilla/derived/items.json`.
-- [ ] Parse `blocks.xml` into `db/datasets/7dtd-vanilla/derived/blocks.json`.
-- [ ] Parse `recipes.xml` into `db/datasets/7dtd-vanilla/derived/recipes.json`.
-- [ ] Parse `Localization.txt` into `db/datasets/7dtd-vanilla/derived/localization.json` or join display names into derived files.
-- [ ] Add provenance info for every derived file.
-- [ ] Normalize all ids to canonical internal ids, not display names.
-- [ ] Include display names as a separate field from localization.
-- [ ] Include recipe craft area/workstation requirement.
-- [ ] Include recipe ingredients and counts.
-- [ ] Include stack sizes where available.
-- [ ] Include block/item model/icon references where available.
+- [x] Create root-level `tools/extract_vanilla_data.py` or equivalent script. Root-level means `/mnt/c/Users/Administrator/source/repos/7d2dmods/tools/`, not inside `db/` or a mod folder.
+- [x] Script reads vanilla XML from `/mnt/d/Program Files (x86)/Steam/steamapps/common/7 Days To Die/Data/Config/`.
+- [x] Parse `items.xml` into `db/datasets/7dtd-vanilla/derived/items.json`.
+- [x] Parse `blocks.xml` into `db/datasets/7dtd-vanilla/derived/blocks.json`.
+- [x] Parse `recipes.xml` into `db/datasets/7dtd-vanilla/derived/recipes.json`.
+- [x] Parse `Localization.txt` into `db/datasets/7dtd-vanilla/derived/localization.json` or join display names into derived files.
+- [x] Add provenance info for every derived file.
+- [x] Normalize all ids to canonical internal ids, not display names.
+- [x] Include display names as a separate field from localization.
+- [x] Include recipe craft area/workstation requirement.
+- [x] Include recipe ingredients and counts.
+- [x] Include stack sizes where available.
+- [x] Include block/item model/icon references where available.
 - [ ] Include unlock/progression fields if found in vanilla XML.
-- [ ] Add a simple query helper script for agents, e.g. `tools/query_vanilla_data.py`.
-- [ ] Update `docs/DATA_LOOKUP_GUIDE.md` with query examples.
+- [x] Add a simple query helper script for agents, e.g. `tools/query_vanilla_data.py`.
+- [x] Update `docs/DATA_LOOKUP_GUIDE.md` with query examples.
 - [ ] Commit dataset expansion separately.
 
 Verification:
@@ -137,20 +137,25 @@ If Python script is not available yet, create it before using these commands.
 
 Do not rewrite AutoForge in place unless the operator asks. Make a clean sibling mod.
 
-- [ ] Confirm operator decision A: mod name.
-- [ ] Create `mods/LogisticsNetwork/` or chosen name.
-- [ ] Create `mods/LogisticsNetwork/ModInfo.xml`.
-- [ ] Create `mods/LogisticsNetwork/build.bat` based on AutoForge build script.
-- [ ] Create `mods/LogisticsNetwork/README.md` explaining MVP.
-- [ ] Create `mods/LogisticsNetwork/Source/LogisticsNetwork.csproj`.
-- [ ] Reference the same required 7DTD assemblies used by AutoForge.
-- [ ] Create `Source/LogisticsNetworkMod.cs` entry point.
-- [ ] Register Harmony patches.
+- [x] Confirm operator decision A: mod name.
+- [x] Create `mods/LogisticsNetwork/` or chosen name.
+- [x] Create `mods/LogisticsNetwork/ModInfo.xml`.
+- [x] Create `mods/LogisticsNetwork/build.bat` based on AutoForge build script.
+- [x] Create `mods/LogisticsNetwork/README.md` explaining MVP.
+- [x] Create `mods/LogisticsNetwork/Source/LogisticsNetwork.csproj`.
+- [x] Reference the same required 7DTD assemblies used by AutoForge.
+- [x] Create `Source/LogisticsNetworkMod.cs` entry point.
+- [x] Register Harmony patches.
 - [ ] Add tick scheduling similar to AutoForge but renamed/generalized.
-- [ ] Add minimal logging helper.
-- [ ] Add empty `Config/blocks.xml`, `recipes.xml`, `localization.txt` scaffolds.
-- [ ] Build once and document any missing references.
+- [x] Add minimal logging helper.
+- [x] Add empty `Config/blocks.xml`, `recipes.xml`, `localization.txt` scaffolds.
+- [x] Build once and document any missing references.
 - [ ] Commit skeleton separately.
+
+Notes:
+
+- The skeleton build verified successfully with `cmd.exe /c "cd /d C:\Users\Administrator\source\repos\7d2dmods\mods\LogisticsNetwork && build.bat"`.
+- The new project uses absolute HintPath references to the installed game on this machine.
 
 Verification:
 

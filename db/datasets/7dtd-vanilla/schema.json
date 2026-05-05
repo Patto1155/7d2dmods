@@ -1,17 +1,32 @@
 {
   "dataset": "7dtd-vanilla",
-  "description": "Seed dataset for vanilla 7 Days to Die crafting and workstation metadata.",
+  "description": "Seed dataset for vanilla 7 Days to Die crafting, workstation, and localization metadata.",
   "entities": {
-    "workstations": {
+    "blocks": {
       "primary_key": "id",
       "fields": [
         "id",
         "display_name",
         "source_file",
+        "source_path",
         "block_class",
         "crafting_area",
-        "ingredients",
+        "crafting_areas",
+        "modules",
+        "input_materials",
+        "tool_names",
         "description_key",
+        "stack_size",
+        "value",
+        "material",
+        "group",
+        "creative_mode",
+        "icon",
+        "model",
+        "unlocked_by",
+        "tags",
+        "filter_tags",
+        "repair_items",
         "notes"
       ]
     },
@@ -21,10 +36,19 @@
         "id",
         "display_name",
         "source_file",
+        "source_path",
+        "description_key",
         "stack_size",
         "value",
         "material",
         "group",
+        "creative_mode",
+        "icon",
+        "model",
+        "display_type",
+        "unlocked_by",
+        "tags",
+        "repair_items",
         "notes"
       ]
     },
@@ -33,12 +57,53 @@
       "fields": [
         "id",
         "output",
+        "output_display_name",
         "count",
         "craft_area",
         "craft_time",
+        "craft_exp_gain",
+        "always_unlocked",
+        "material_based",
+        "is_trackable",
+        "use_ingredient_modifier",
+        "tags",
+        "tooltip",
         "ingredients",
+        "special_components",
         "source_file",
+        "source_path",
         "notes"
+      ]
+    },
+    "workstations": {
+      "primary_key": "id",
+      "fields": [
+        "id",
+        "display_name",
+        "source_file",
+        "source_path",
+        "block_class",
+        "crafting_area",
+        "ingredients",
+        "description_key",
+        "icon",
+        "model",
+        "modules",
+        "input_materials",
+        "tool_names",
+        "unlocked_by",
+        "notes"
+      ]
+    },
+    "localization": {
+      "primary_key": "key",
+      "fields": [
+        "key",
+        "category",
+        "type",
+        "english",
+        "context",
+        "source_file"
       ]
     }
   },
@@ -49,6 +114,6 @@
       "D:/Program Files (x86)/Steam/steamapps/common/7 Days To Die/Data/Config/recipes.xml",
       "D:/Program Files (x86)/Steam/steamapps/common/7 Days To Die/Data/Config/Localization.txt"
     ],
-    "seeded_from": "sub-agent inspection of vanilla 7DTD XML files"
+    "generated_by": "tools/extract_vanilla_data.py"
   }
 }

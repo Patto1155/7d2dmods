@@ -1,0 +1,5 @@
+<configs>
+  <append xpath="/blocks">
+    <!-- Placeholder for future LogisticsNetwork blocks. Intentionally empty in the passive skeleton. -->
+  </append>
+</configs>

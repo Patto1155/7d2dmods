@@ -16,7 +16,7 @@ Seed data currently includes:
 - a starter set of workstation blocks
 - a starter set of resource items
 - representative recipe/source metadata
-- schema and provenance notes
+- schema, localization, and provenance notes
 
 This dataset is intentionally conservative. Expand it from game XML as implementation needs grow.
 
@@ -52,9 +52,11 @@ query_examples.md
 raw/
   provenance.md
 derived/
+  blocks.json
   items.json
   recipes.json
   workstations.json
+  localization.json
 ```
 
 ## How to use for coding
@@ -70,11 +72,10 @@ Before opening vanilla XML, check the derived JSON:
 Recommended code-agent flow:
 
 1. Read `docs/DATA_LOOKUP_GUIDE.md`.
-2. Read this README.
-3. Read `schema.json`.
-4. Query the relevant `derived/*.json` file.
-5. Only inspect raw vanilla XML if the derived dataset is missing a field.
-6. If new data is extracted, update the dataset and docs.
+2. Run `python3 tools/validate_dataset.py` if you want a quick integrity check.
+3. Use `python3 tools/query_vanilla_data.py <entity> <needle>` to inspect the derived dataset.
+4. Only inspect raw vanilla XML if the derived dataset is missing a field or looks stale.
+5. If new data is extracted, run `python3 tools/extract_vanilla_data.py` and commit the dataset update separately from gameplay code.
 
 ## Mapping to mod implementation
 
