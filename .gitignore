@@ -1,0 +1,19 @@
+# Build outputs
+**/bin/
+**/obj/
+*.dll
+*.pdb
+
+# Logs and temporary files
+*.log
+*.tmp
+*.cache
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Python scratch scripts from the original mod folder
+mods/AutoForge/inspect*.py

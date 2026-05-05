@@ -1,0 +1,4 @@
+<configs>
+  <!-- Phase 2: Define a custom AutoForge window group here for dedicated UI (queue viewer, network status panel). -->
+  <!-- Phase 1 reuses the vanilla workbench window group via WindowGroup="workbench" in blocks.xml. -->
+</configs>

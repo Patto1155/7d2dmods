@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ModInfo>
+    <Name value="AutoForge" />
+    <DisplayName value="AutoForge" />
+    <Version value="0.1.0" />
+    <Author value="Patto1155" />
+    <Description value="Automated crafting network — link storage crates to a workstation via conduits." />
+    <Website value="" />
+</ModInfo>
