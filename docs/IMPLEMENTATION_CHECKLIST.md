@@ -212,7 +212,7 @@ Verification:
 - [x] Report depth-limit truncation in graph summary; include topology hash in scan logs.
 - [ ] Add tests if a test harness can be created outside game runtime.
 - [x] Otherwise add a deterministic debug command/log path for in-game verification.
-- [ ] Commit scanner milestone.
+- [x] Commit scanner milestone.
 
 Verification:
 
@@ -249,17 +249,18 @@ Verification:
 
 ## Phase 6: Storage endpoint abstraction
 
-- [ ] Create `NetworkEndpoint` base/interface.
-- [ ] Create `StorageEndpoint` wrapper around vanilla loot containers/storage tile entities.
-- [ ] Implement read inventory slots.
+- [x] Create `NetworkEndpoint` snapshot model (`mods/LogisticsNetwork/Source/Network/NetworkEndpoint.cs`).
+- [x] Create `StorageEndpoint` passive resolver for `TileEntityLootContainer` (`StorageEndpoint.cs`).
+- [~] Implement read inventory slots (verified: `TileEntityLootContainer.items` is `ItemStack[]`; full read/move APIs still unverified for automation).
 - [ ] Implement can-insert check.
 - [ ] Implement insert stack or partial stack.
 - [ ] Implement can-extract check.
 - [ ] Implement extract stack or partial stack.
 - [ ] Mark tile entity modified after mutations.
 - [ ] Add logs for item id/count moved.
-- [ ] Add safeguards against null tile entities and unloaded chunks.
-- [ ] Commit storage endpoint milestone.
+- [x] Add safeguards against null tile entities and unloaded chunks (`World.IsChunkAreaLoaded`, null `GetTileEntity`).
+- [x] Add logs proving storage nodes resolve (per-graph lines when topology snapshot changes).
+- [x] Commit storage endpoint milestone.
 
 Verification:
 

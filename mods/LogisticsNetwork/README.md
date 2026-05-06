@@ -14,6 +14,7 @@ This is a clean sibling of the legacy AutoForge prototype. It currently provides
 - logistics connector block (registry + scan; no routing UI or item IO yet)
 - reusable block registry, bootstrap retry with throttling, registry pruning against world blocks
 - BFS network scanner with depth-limit truncation reporting
+- passive `StorageEndpoint` / `NetworkEndpoint` snapshots for scanned storage positions (metadata + slot count log lines; no item movement)
 - minimal logging helper
 - config scaffolds for future routing, recipes, localization, and UI hooks
 

@@ -32,7 +32,20 @@ namespace LogisticsNetwork.Tick
 
             for (int i = 0; i < graphs.Count; i++)
             {
-                Log.Out(graphs[i].ToSummaryString(i + 1) + " topologyHash=" + TopologyFingerprint(graphs[i]));
+                NetworkGraph graph = graphs[i];
+                Log.Out(graph.ToSummaryString(i + 1) + " topologyHash=" + TopologyFingerprint(graph));
+                LogStorageEndpoints(world, graph, i + 1);
+            }
+        }
+
+        private static void LogStorageEndpoints(World world, NetworkGraph graph, int graphIndex)
+        {
+            foreach (Vector3i position in graph.Storage)
+            {
+                if (!StorageEndpoint.TryDescribe(world, position, out NetworkEndpoint endpoint))
+                    continue;
+
+                Log.Out(endpoint.ToLogString(graphIndex));
             }
         }
 

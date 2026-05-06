@@ -194,17 +194,29 @@ Questions to verify:
 
 ### TileEntityLootContainer
 
-Status: Prototype
+Status: Verified (partial, assembly reflection against local Steam `Assembly-CSharp.dll`; re-verify after major game updates)
 
 Original network scan returned connected `TileEntityLootContainer` storage crates.
 
-Questions to verify:
+Verified for passive metadata:
+
+- Public instance property `items` returns `ItemStack[]` (slot capacity equals array length when non-null).
+- Runtime type name is suitable for logging adjacent storage endpoints.
+
+Still verify before any automated insert/extract:
 
 - Which vanilla storage containers use this class?
-- How to safely read item slots?
+- How to safely read item slots beyond length / without corrupting state?
 - How to safely insert/extract item stacks?
 - Which method marks the tile entity dirty/modified?
 - What sync call is needed in multiplayer?
+
+### World chunk / tile entity queries (storage resolution)
+
+Status: Verified (method signatures from assembly reflection)
+
+- `World.IsChunkAreaLoaded(int blockPosX, int blockPosY, int blockPosZ)` returns whether the area is loaded for resolution.
+- `World.GetTileEntity(int, Vector3i)` — logistics code uses `GetTileEntity(0, position)` consistent with adjacent endpoint scans.
 
 ### TileEntityWorkstation
 

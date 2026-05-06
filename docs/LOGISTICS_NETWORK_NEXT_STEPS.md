@@ -9,6 +9,7 @@ Completed locally and pushed:
 - `mods/LogisticsNetwork/` skeleton
 - conduit block
 - connector block (scan/registry shell; same passive behavior as conduits)
+- storage endpoint metadata wrapper (`StorageEndpoint` / `NetworkEndpoint`) with chunk/null guards and slot-count logging (no item IO)
 - registry pruning + throttled reflection bootstrap for empty-registry recovery
 - depth-limit truncation flag + topology hash in scan logs
 - registry + passive network scanner
@@ -31,9 +32,9 @@ The current implementation is intentionally passive/local-first and should not c
    - keep the MVP simple: one block role first, not a large UI system
 
 3. Storage endpoint support
-   - read and mutate storage inventories safely
+   - done (passive): resolve `TileEntityLootContainer`, log type + slot count, guard unloaded chunks / null TE
+   - next: read and mutate storage inventories safely once insert/extract APIs are verified
    - add insertion/extraction helpers
-   - guard against null tile entities and unloaded chunks
 
 4. Workstation endpoint support
    - identify vanilla workstations through the network
