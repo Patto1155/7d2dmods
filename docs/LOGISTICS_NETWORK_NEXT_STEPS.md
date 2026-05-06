@@ -8,6 +8,9 @@ Completed locally and pushed:
 
 - `mods/LogisticsNetwork/` skeleton
 - conduit block
+- connector block (scan/registry shell; same passive behavior as conduits)
+- registry pruning + throttled reflection bootstrap for empty-registry recovery
+- depth-limit truncation flag + topology hash in scan logs
 - registry + passive network scanner
 - 2-second tick loop
 - basic docs/checklist updates
@@ -62,12 +65,12 @@ The current implementation is intentionally passive/local-first and should not c
 
 ## Review notes from the conduit/scanner milestone
 
-- The scanner currently uses reflection/bootstrap assumptions that still need verification.
-- The first bootstrap scan should not permanently fail just because the world was not ready yet.
-- A fixed scan-depth cap can truncate large networks, so future work should detect/report truncation.
-- Registry-based conduit recognition should be checked against world state to avoid stale or phantom nodes.
-- Topology snapshots should include more than just endpoint counts if we want useful change detection.
-- The current conduit-first approach is acceptable for the milestone, but the spec still wants a connector layer.
+- The scanner still uses reflection-based `World.GetTileEntities` discovery when the registry is empty; method signature drift across game versions remains an **unverified assumption** (throttled retries reduce permanent failure).
+- Bootstrap retries on a timer when no registry seeds exist; repeated empty runs slow to 30s after several attempts to reduce reflection churn when no logistics blocks exist.
+- A fixed scan-depth cap can truncate large networks; truncation is surfaced via `truncatedDepth=Y` on the graph summary when hit.
+- Registry entries are pruned against live world blocks to reduce phantom nodes when removal events were missed.
+- Tick snapshots hash sorted conduit/connector/storage/workstation positions so topology changes log even when counts stay the same.
+- Connectors exist as a first-class scanned node (`logisticsConnector`); importer/exporter/filter roles remain future work.
 
 ## Guardrails for future work
 

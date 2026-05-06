@@ -6,5 +6,11 @@
       <ingredient name="resourceScrapPolymers" count="1"/>
     </recipe>
 
+    <recipe name="logisticsConnector" count="1" craft_area="workbench" craft_time="8">
+      <ingredient name="resourceForgedIron" count="4"/>
+      <ingredient name="resourceMechanicalParts" count="2"/>
+      <ingredient name="resourceElectricParts" count="1"/>
+    </recipe>
+
   </append>
 </configs>

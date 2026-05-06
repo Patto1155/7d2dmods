@@ -11,11 +11,13 @@ This is a clean sibling of the legacy AutoForge prototype. It currently provides
 - Harmony entry point
 - passive 2-second network scan tick
 - vanilla-prefab logistics conduit block
-- reusable conduit registry and BFS network scanner
+- logistics connector block (registry + scan; no routing UI or item IO yet)
+- reusable block registry, bootstrap retry with throttling, registry pruning against world blocks
+- BFS network scanner with depth-limit truncation reporting
 - minimal logging helper
 - config scaffolds for future routing, recipes, localization, and UI hooks
 
-It does not yet move items, automate workstations, or replace vanilla workstation UIs.
+It does not yet move items, automate workstations, or replace vanilla workstation UIs. Multiplayer behavior is not verified.
 
 ## Install Location
 

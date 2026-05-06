@@ -203,9 +203,13 @@ Verification:
 - [ ] Track connector positions.
 - [x] Track adjacent storage endpoints.
 - [x] Track adjacent workstation endpoints.
+- [x] Track connector positions (registry + graph counts; traversed like conduits).
 - [x] Add max scan depth constant.
 - [x] Add loop/visited protection.
 - [x] Add debug logging summary: conduits, storage endpoints, workstation endpoints.
+- [x] Harden bootstrap: throttled reflection seeding (no one-shot failure when the world is not ready); slow down after repeated empty bootstraps.
+- [x] Prune registry entries when the world block at a recorded position is no longer a logistics block.
+- [x] Report depth-limit truncation in graph summary; include topology hash in scan logs.
 - [ ] Add tests if a test harness can be created outside game runtime.
 - [x] Otherwise add a deterministic debug command/log path for in-game verification.
 - [ ] Commit scanner milestone.
@@ -220,13 +224,13 @@ Verification:
 ## Phase 5: Connector/importer/exporter/filter block design
 
 - [ ] Confirm operator decision C: UI strategy.
-- [ ] Add `logisticsConnector` block XML.
+- [x] Add `logisticsConnector` block XML.
 - [ ] Add `logisticsImporter` block XML if using separate role blocks.
 - [ ] Add `logisticsExporter` block XML if using separate role blocks.
 - [ ] Add `logisticsFilter` item/block XML if using filter modules.
-- [ ] Add localization for all blocks/items.
-- [ ] Add recipes that fit 7DTD progression.
-- [ ] Implement `ConnectorBlock.cs` shell.
+- [x] Add localization for connector (importer/exporter/filter still future).
+- [x] Add connector recipe; other role blocks still future.
+- [x] Implement `LogisticsConnectorBlock.cs` shell (registers with network; scan treats it as a network node).
 - [ ] Implement role detection: connector/importer/exporter/filter.
 - [ ] Implement adjacent tile entity discovery.
 - [ ] Log adjacent block/entity type for verification.

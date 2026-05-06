@@ -9,6 +9,9 @@ namespace LogisticsNetwork.Network
     public static class NetworkScanner
     {
         private const int DefaultMaxDepth = 64;
+        private const int BootstrapThrottleMs = 3000;
+        private const int BootstrapSlowThrottleMs = 30000;
+        private const int BootstrapSlowThreshold = 8;
 
         private static readonly Vector3i[] Directions = new Vector3i[]
         {
@@ -21,7 +24,8 @@ namespace LogisticsNetwork.Network
         };
 
         private static World lastBootstrapWorld;
-        private static bool bootstrapAttempted;
+        private static int lastBootstrapTick;
+        private static int consecutiveEmptyBootstraps;
 
         private struct SearchNode
         {
@@ -44,20 +48,14 @@ namespace LogisticsNetwork.Network
             if (!ReferenceEquals(world, lastBootstrapWorld))
             {
                 lastBootstrapWorld = world;
-                bootstrapAttempted = false;
+                lastBootstrapTick = 0;
+                consecutiveEmptyBootstraps = 0;
             }
 
-            HashSet<Vector3i> assignedConduits = new HashSet<Vector3i>();
-            HashSet<Vector3i> seedSet = new HashSet<Vector3i>(NetworkRegistry.GetConduitPositions());
+            NetworkRegistry.PruneStaleEntries(world);
 
-            if (seedSet.Count == 0 && !bootstrapAttempted)
-            {
-                bootstrapAttempted = true;
-                foreach (Vector3i bootstrapSeed in FindBootstrapSeeds(world))
-                {
-                    seedSet.Add(bootstrapSeed);
-                }
-            }
+            HashSet<Vector3i> assignedNodes = new HashSet<Vector3i>();
+            HashSet<Vector3i> seedSet = BuildSeedSet(world);
 
             List<Vector3i> seeds = new List<Vector3i>(seedSet);
             seeds.Sort(CompareVector3i);
@@ -65,7 +63,10 @@ namespace LogisticsNetwork.Network
             for (int i = 0; i < seeds.Count; i++)
             {
                 Vector3i seed = seeds[i];
-                if (assignedConduits.Contains(seed))
+                if (assignedNodes.Contains(seed))
+                    continue;
+
+                if (!IsLogisticsNetworkBlock(world, seed))
                     continue;
 
                 NetworkGraph graph = ScanFromOrigin(world, seed, maxDepth);
@@ -73,9 +74,10 @@ namespace LogisticsNetwork.Network
                     continue;
 
                 foreach (Vector3i conduit in graph.Conduits)
-                {
-                    assignedConduits.Add(conduit);
-                }
+                    assignedNodes.Add(conduit);
+
+                foreach (Vector3i connector in graph.Connectors)
+                    assignedNodes.Add(connector);
 
                 graphs.Add(graph);
             }
@@ -83,10 +85,56 @@ namespace LogisticsNetwork.Network
             return graphs;
         }
 
+        private static HashSet<Vector3i> BuildSeedSet(World world)
+        {
+            HashSet<Vector3i> seedSet = new HashSet<Vector3i>();
+
+            foreach (Vector3i position in NetworkRegistry.GetConduitPositions())
+                seedSet.Add(position);
+
+            foreach (Vector3i position in NetworkRegistry.GetConnectorPositions())
+                seedSet.Add(position);
+
+            if (seedSet.Count == 0 && ShouldAttemptBootstrap())
+            {
+                lastBootstrapTick = Environment.TickCount;
+                int found = 0;
+
+                foreach (Vector3i bootstrapSeed in FindBootstrapSeeds(world))
+                {
+                    if (seedSet.Add(bootstrapSeed))
+                        found++;
+                }
+
+                if (found == 0)
+                    consecutiveEmptyBootstraps++;
+                else
+                    consecutiveEmptyBootstraps = 0;
+            }
+
+            return seedSet;
+        }
+
+        private static bool ShouldAttemptBootstrap()
+        {
+            if (consecutiveEmptyBootstraps >= BootstrapSlowThreshold)
+            {
+                return ElapsedSince(lastBootstrapTick) >= BootstrapSlowThrottleMs;
+            }
+
+            return lastBootstrapTick == 0 || ElapsedSince(lastBootstrapTick) >= BootstrapThrottleMs;
+        }
+
+        private static int ElapsedSince(int previousTick)
+        {
+            return unchecked(Environment.TickCount - previousTick);
+        }
+
         public static void ResetBootstrapState()
         {
             lastBootstrapWorld = null;
-            bootstrapAttempted = false;
+            lastBootstrapTick = 0;
+            consecutiveEmptyBootstraps = 0;
         }
 
         private static IEnumerable<Vector3i> FindBootstrapSeeds(World world)
@@ -102,15 +150,30 @@ namespace LogisticsNetwork.Network
                 for (int i = 0; i < Directions.Length; i++)
                 {
                     Vector3i neighbor = tileEntityPosition + Directions[i];
-                    if (!IsConduit(world, neighbor))
+                    if (!IsLogisticsNetworkBlock(world, neighbor))
                         continue;
 
                     if (seeds.Add(neighbor))
-                        NetworkRegistry.RegisterConduit(neighbor);
+                        RegisterBlockFromWorld(world, neighbor);
                 }
             }
 
             return seeds;
+        }
+
+        private static void RegisterBlockFromWorld(World world, Vector3i position)
+        {
+            Block block = world.GetBlock(position).Block;
+            if (block is LogisticsConduitBlock)
+            {
+                NetworkRegistry.RegisterConduit(position);
+                return;
+            }
+
+            if (block is LogisticsConnectorBlock)
+            {
+                NetworkRegistry.RegisterConnector(position);
+            }
         }
 
         private static IEnumerable<TileEntity> EnumerateTileEntities(World world)
@@ -237,16 +300,16 @@ namespace LogisticsNetwork.Network
             visited.Add(origin);
             queue.Enqueue(new SearchNode(origin, 0));
 
-            if (IsConduit(world, origin))
-            {
-                graph.AddConduit(origin);
-            }
+            AddLogisticsBlockToGraph(world, origin, graph);
 
             while (queue.Count > 0)
             {
                 SearchNode current = queue.Dequeue();
                 if (current.Depth >= maxDepth)
+                {
+                    graph.TruncatedByDepthLimit = true;
                     continue;
+                }
 
                 int nextDepth = current.Depth + 1;
 
@@ -258,9 +321,9 @@ namespace LogisticsNetwork.Network
 
                     visited.Add(neighbor);
 
-                    if (IsConduit(world, neighbor))
+                    if (IsLogisticsNetworkBlock(world, neighbor))
                     {
-                        graph.AddConduit(neighbor);
+                        AddLogisticsBlockToGraph(world, neighbor, graph);
                         queue.Enqueue(new SearchNode(neighbor, nextDepth));
                         continue;
                     }
@@ -276,14 +339,28 @@ namespace LogisticsNetwork.Network
             return graph;
         }
 
-        private static bool IsConduit(World world, Vector3i position)
+        private static void AddLogisticsBlockToGraph(World world, Vector3i position, NetworkGraph graph)
         {
-            if (NetworkRegistry.IsConduitRegistered(position))
+            Block block = world.GetBlock(position).Block;
+            if (block is LogisticsConduitBlock)
+            {
+                graph.AddConduit(position);
+                return;
+            }
+
+            if (block is LogisticsConnectorBlock)
+            {
+                graph.AddConnector(position);
+            }
+        }
+
+        private static bool IsLogisticsNetworkBlock(World world, Vector3i position)
+        {
+            if (NetworkRegistry.IsConduitRegistered(position) || NetworkRegistry.IsConnectorRegistered(position))
                 return true;
 
-            BlockValue value = world.GetBlock(position);
-            Block block = value.Block;
-            return block is LogisticsConduitBlock;
+            Block block = world.GetBlock(position).Block;
+            return block is LogisticsConduitBlock || block is LogisticsConnectorBlock;
         }
 
         private static bool TryGetEndpointKind(World world, Vector3i position, out NetworkEndpointKind kind)

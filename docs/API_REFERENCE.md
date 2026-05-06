@@ -147,6 +147,24 @@ Reference:
 
 Keep player-facing names clear. Include descriptions explaining block behavior.
 
+## LogisticsNetwork: passive scanner bootstrap
+
+Status: Suspected (depends on reflection matching current `World` / `TileEntity` shapes)
+
+When the conduit/connector registry has no entries, `NetworkScanner` can attempt a **throttled** reflection pass to find parameterless `World.GetTileEntities()` and enumerate its results. It then looks for `logisticsConduit` / `logisticsConnector` blocks in tiles adjacent to discovered tile-entity positions and registers them.
+
+**Unverified assumptions** (must be re-checked when changing game versions):
+
+- `World` exposes a parameterless instance method named `GetTileEntities` that returns an enumerable.
+- Enumerated entries are `TileEntity` values or objects with a `Value` property assignable to `TileEntity`.
+- A usable block position is available on tile entities via a `Vector3i` property/field named one of: `BlockPosition`, `blockPos`, `blockPosition`, `Position`, `pos`.
+
+**Behavioral notes:**
+
+- If this reflection path fails, bootstrap yields no seeds; the mod retries on a short timer and backs off to 30s after several empty attempts to avoid spamming reflection while no logistics blocks exist.
+- `NetworkRegistry` prunes saved positions when the world block at that cell is no longer a `LogisticsConduitBlock` / `LogisticsConnectorBlock` instance (guards against stale registry entries).
+- BFS uses a max depth; when the frontier hits the cap, `NetworkGraph.TruncatedByDepthLimit` is set and logs include `truncatedDepth=Y`.
+
 ## Vanilla data source paths
 
 Status: Verified path availability from local machine

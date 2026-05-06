@@ -1,3 +1,5 @@
 Key,File,Type,UsedInMainMenu,NoTranslate,english,german,latam,french,italian,japanese,koreana,polish,brazilian,russian,turkish,schinese,tchinese,spanish
 logisticsConduit,blocks,Block,false,false,Logistics Conduit,,,,,,,,,,,,,
 logisticsConduitDesc,blocks,Block,false,false,A reusable conduit segment for the Wasteland Logistics network.,,,,,,,,,,,,,,
+logisticsConnector,blocks,Block,false,false,Logistics Connector,,,,,,,,,,,,,
+logisticsConnectorDesc,blocks,Block,false,false,A network port placed beside storage or workstations. Passive scan only; no item movement yet.,,,,,,,,,,,,,,

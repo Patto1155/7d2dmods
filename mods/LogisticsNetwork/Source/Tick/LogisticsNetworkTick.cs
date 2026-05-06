@@ -32,7 +32,7 @@ namespace LogisticsNetwork.Tick
 
             for (int i = 0; i < graphs.Count; i++)
             {
-                Log.Out(graphs[i].ToSummaryString(i + 1));
+                Log.Out(graphs[i].ToSummaryString(i + 1) + " topologyHash=" + TopologyFingerprint(graphs[i]));
             }
         }
 
@@ -45,16 +45,63 @@ namespace LogisticsNetwork.Tick
                     sb.Append('|');
 
                 NetworkGraph graph = graphs[i];
-                sb.Append(graph.Origin);
+                sb.Append(graph.Origin.x).Append(',').Append(graph.Origin.y).Append(',').Append(graph.Origin.z);
                 sb.Append(':');
-                sb.Append(graph.ConduitCount);
+                sb.Append(graph.ConduitCount).Append(',').Append(graph.ConnectorCount).Append(',').Append(graph.StorageCount).Append(',').Append(graph.WorkstationCount);
                 sb.Append(',');
-                sb.Append(graph.StorageCount);
+                sb.Append(graph.TruncatedByDepthLimit ? '1' : '0');
                 sb.Append(',');
-                sb.Append(graph.WorkstationCount);
+                sb.Append(TopologyFingerprint(graph));
             }
 
             return sb.ToString();
+        }
+
+        private static int TopologyFingerprint(NetworkGraph graph)
+        {
+            List<Vector3i> keys = new List<Vector3i>();
+            AddSortedKeys(keys, graph.Conduits);
+            AddSortedKeys(keys, graph.Connectors);
+            AddSortedKeys(keys, graph.Storage);
+            AddSortedKeys(keys, graph.Workstations);
+
+            unchecked
+            {
+                int h = (int)2166136261;
+                for (int i = 0; i < keys.Count; i++)
+                {
+                    Vector3i p = keys[i];
+                    h ^= p.x;
+                    h *= 16777619;
+                    h ^= p.y;
+                    h *= 16777619;
+                    h ^= p.z;
+                    h *= 16777619;
+                }
+
+                return h;
+            }
+        }
+
+        private static void AddSortedKeys(List<Vector3i> keys, IEnumerable<Vector3i> positions)
+        {
+            foreach (Vector3i position in positions)
+                keys.Add(position);
+
+            keys.Sort(CompareVector3i);
+        }
+
+        private static int CompareVector3i(Vector3i left, Vector3i right)
+        {
+            int result = left.x.CompareTo(right.x);
+            if (result != 0)
+                return result;
+
+            result = left.y.CompareTo(right.y);
+            if (result != 0)
+                return result;
+
+            return left.z.CompareTo(right.z);
         }
     }
 }
