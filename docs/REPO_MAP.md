@@ -2,44 +2,56 @@
 
 ## Current content
 
-### `mods/AutoForge/`
+### `mods/LogisticsNetwork/`
 
-Legacy prototype reference for the original mod.
+Active development directory for the redesigned mod.
 
-This folder is preserved so agents can reuse working patterns, but it should not be treated as the final product architecture.
+Player-facing name: `Wasteland Logistics`.
+
+Purpose:
+
+- logistics conduits
+- logistics connectors
+- storage endpoints
+- vanilla workstation endpoints
+- future importer/exporter/filter behavior
+- future recipe/pattern automation after API verification
 
 Important files:
 
-- `README.md` — original mod handover / usage notes.
-- `ModInfo.xml` — prototype mod metadata loaded by the game.
-- `build.bat` — local build helper.
-- `Source/AutoForge.csproj` — .NET 4.8 project file.
-- `Source/AutoForgeMod.cs` — prototype entry point.
-- `Source/AutoForgeRegistry.cs` — registry for placed Auto Forge blocks.
-- `Source/AutoForgeTick.cs` — tick/update logic shell.
-- `Source/Blocks/AutoForgeBlock.cs` — legacy custom workstation behavior; should be retired as centerpiece.
-- `Source/Blocks/ConduitBlock.cs` — useful conduit behavior shell.
-- `Source/Network/ConduitNetwork.cs` — useful connected-network BFS search.
-- `Source/Patches/HarmonyPatches.cs` — patch placeholder.
-- `Config/blocks.xml` — prototype block definitions.
-- `Config/recipes.xml` — prototype crafting recipes.
-- `Config/localization.txt` — prototype names and descriptions.
-- `Config/XUi/windows.xml` — prototype UI hooks/notes.
+- `README.md` — active mod overview and build instructions.
+- `ModInfo.xml` — active mod metadata loaded by the game.
+- `build.bat` — Windows build helper.
+- `Config/blocks.xml` — active block definitions.
+- `Config/recipes.xml` — active recipes.
+- `Config/localization.txt` — active names/descriptions.
+- `Source/LogisticsNetwork.csproj` — C# project file.
+- `Source/LogisticsNetworkMod.cs` — mod entry point.
+- `Source/Blocks/LogisticsConduitBlock.cs` — passive network conduit.
+- `Source/Blocks/LogisticsConnectorBlock.cs` — MVP connector block.
+- `Source/Network/NetworkRegistry.cs` — placed logistics block registry.
+- `Source/Network/NetworkScanner.cs` — BFS/scanner/bootstrap logic.
+- `Source/Network/NetworkGraph.cs` — graph snapshot model.
+- `Source/Network/NetworkEndpoint.cs` — endpoint abstraction.
+- `Source/Network/StorageEndpoint.cs` — passive storage endpoint snapshot.
+- `Source/Tick/LogisticsNetworkTick.cs` — throttled scan tick.
 
-### `mods/LogisticsNetwork/`
+### Legacy AutoForge prototype
 
-Planned active development directory for the redesigned mod.
+The old AutoForge prototype created a custom `Auto Forge` workstation and a forge-specific conduit. That concept is retired as the active gameplay direction.
 
-This directory may not exist yet. Create it when implementation begins unless the operator chooses a different mod/internal name.
+If a `mods/AutoForge/` folder exists in a local checkout or game install, treat it as legacy only. Do not install it alongside `mods/LogisticsNetwork/` unless intentionally testing the old prototype, because it exposes the unwanted `Auto Forge` creative-menu item.
 
-Target purpose:
+The useful ideas from AutoForge have already been ported or documented:
 
-- conduits
-- connectors
-- importer/exporter/filter blocks
-- vanilla workstation endpoints
-- storage routing
-- recipe/pattern automation
+- Harmony entry point pattern
+- throttled tick loop
+- placed-block registry
+- conduit block shell
+- BFS network scanning
+- vanilla prefab usage
+
+Use git history for old AutoForge source if needed; do not continue development there.
 
 ### `docs/`
 
@@ -50,6 +62,7 @@ Important files:
 - `AGENT_START_HERE.md` — first read for fresh agents.
 - `REDESIGN_SPEC.md` — target product and architecture.
 - `IMPLEMENTATION_CHECKLIST.md` — long implementation plan with operator decision gates.
+- `LOGISTICS_NETWORK_NEXT_STEPS.md` — compact current roadmap and review notes.
 - `API_REFERENCE.md` — verified/suspected 7DTD C# and XML API facts.
 - `DATA_LOOKUP_GUIDE.md` — how to use the in-repo vanilla dataset.
 - `LESSONS_LEARNED.md` — historical notes from the initial prototype.
@@ -73,35 +86,35 @@ Important files:
 - `raw/provenance.md`
 - `derived/workstations.json`
 - `derived/items.json`
+- `derived/blocks.json`
 - `derived/recipes.json`
+- `derived/localization.json`
 
-### Future root `tools/`
+### `tools/`
 
-Planned root-level location: `tools/` at the repository root, not inside `db/` or a mod folder.
+Root-level extraction/query/validation scripts that help agents work with game data and repo checks. Runtime game code should not depend on these Python tools.
 
-Purpose: reusable extraction/query/validation scripts that help agents work with game data and repo checks. Runtime game code should not depend on these Python tools.
-
-Suggested future files:
+Important files:
 
 - `tools/extract_vanilla_data.py`
 - `tools/query_vanilla_data.py`
 - `tools/validate_dataset.py`
+- `tools/vanilla_data.py`
 
 Do not commit one-off scratch scripts unless they are cleaned up and documented.
 
-## What was intentionally not copied
+## What should not be committed
 
-- `AutoForge.dll`
-- `AutoForge.pdb`
+- compiled mod DLLs/PDBs unless explicitly requested as release artifacts
 - `Source/obj/`
-- scratch inspection scripts like `inspect2.py`, `inspect3.py`, `inspect_sig.py`
+- scratch inspection scripts
 - credentials or local auth files
+- active development under `mods/AutoForge/`
 
 ## Suggested next steps
 
-1. Confirm operator decisions in `docs/IMPLEMENTATION_CHECKLIST.md`.
-2. Expand `db/datasets/7dtd-vanilla/` with repeatable extraction scripts.
-3. Create `mods/LogisticsNetwork/` as a clean sibling to legacy AutoForge.
-4. Port conduit/network scanning concepts.
-5. Implement storage routing before risky workstation recipe queue automation.
-6. Update docs as API facts are verified.
+1. Keep `mods/LogisticsNetwork/` as the only active mod.
+2. Continue scanner/bootstrap hardening and endpoint verification.
+3. Implement storage routing before risky workstation recipe queue automation.
+4. Use connectors to expose vanilla workstations instead of adding replacement workstation blocks.
+5. Update docs as API facts are verified.

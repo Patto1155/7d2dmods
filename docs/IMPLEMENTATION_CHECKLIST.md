@@ -86,12 +86,12 @@ Operator choices:
 
 ## Phase 0: Repo orientation and safety
 
-- [x] Preserve original AutoForge prototype under `mods/AutoForge/`.
+- [x] Imported original AutoForge prototype history/reference.
 - [x] Push initial prototype import to GitHub main.
 - [x] Seed in-repo vanilla 7DTD dataset under `db/datasets/7dtd-vanilla/`.
 - [x] Push dataset seed to GitHub main.
 - [x] Create forward-looking redesign docs.
-- [ ] Keep `mods/AutoForge/` untouched except for legacy notes unless the operator asks for migration edits.
+- [x] Operator decision: retire/remove active `mods/AutoForge/`; only `mods/LogisticsNetwork/` should be installed as the active mod.
 - [ ] Never commit compiled DLLs/PDBs unless the operator explicitly wants release artifacts tracked.
 - [ ] Never commit credentials or local GitHub auth files.
 
@@ -137,7 +137,7 @@ If Python script is not available yet, create it before using these commands.
 
 ## Phase 2: Create the new mod skeleton
 
-Do not rewrite AutoForge in place unless the operator asks. Make a clean sibling mod.
+The active mod is `mods/LogisticsNetwork/`. The retired AutoForge prototype should not be installed or treated as an active mod.
 
 - [x] Confirm operator decision A: mod name.
 - [x] Create `mods/LogisticsNetwork/` or chosen name.
@@ -512,7 +512,7 @@ Verification:
 
 The redesign is “implemented” when:
 
-- [ ] The custom AutoForge workstation is no longer required for automation gameplay.
+- [x] The custom AutoForge workstation is retired as an active gameplay target; automation should use vanilla workstations through logistics connectors/conduits.
 - [ ] Conduits connect multiple vanilla workstations and storage containers.
 - [ ] At least one storage sorting route works reliably.
 - [ ] At least one vanilla workstation can have outputs extracted automatically.

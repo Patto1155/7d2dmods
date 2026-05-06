@@ -6,7 +6,7 @@ This repo is intentionally organized so a coding agent can start quickly without
 
 Build a general 7 Days to Die logistics and automation mod inspired by block-network storage systems such as Refined Storage, but designed for 7DTD.
 
-The original `AutoForge` prototype is preserved, but it is now legacy reference code. The future mod should not center on a custom `Auto Forge` workstation.
+The old `AutoForge` prototype is retired as active gameplay. The current mod should not center on a custom `Auto Forge` workstation; it should connect vanilla workstations through Wasteland Logistics conduits/connectors.
 
 ## Read order for future agents
 
@@ -14,14 +14,12 @@ Read these first, in this order:
 
 1. `docs/REDESIGN_SPEC.md` — product and architecture target.
 2. `docs/IMPLEMENTATION_CHECKLIST.md` — long task checklist and operator decision gates.
-3. `docs/API_REFERENCE.md` — known 7DTD/Harmony/C# API notes and places where the API still needs verification.
-4. `docs/DATA_LOOKUP_GUIDE.md` — how to use the in-repo vanilla game data instead of searching every time.
-5. `docs/REPO_MAP.md` — where things live.
-6. `docs/LESSONS_LEARNED.md` — why the redesign exists and what to avoid.
-7. `mods/AutoForge/README.md` — original prototype handover.
-8. `mods/AutoForge/Source/Network/ConduitNetwork.cs` — useful existing BFS/network code.
-9. `mods/AutoForge/Source/Blocks/ConduitBlock.cs` — useful existing conduit block shell.
-10. `mods/AutoForge/Source/AutoForgeTick.cs` — useful existing tick-loop shell.
+3. `docs/LOGISTICS_NETWORK_NEXT_STEPS.md` — compact current roadmap and recent review notes.
+4. `docs/API_REFERENCE.md` — known 7DTD/Harmony/C# API notes and places where the API still needs verification.
+5. `docs/DATA_LOOKUP_GUIDE.md` — how to use the in-repo vanilla game data instead of searching every time.
+6. `docs/REPO_MAP.md` — where things live.
+7. `docs/LESSONS_LEARNED.md` — why the redesign exists and what to avoid.
+8. `mods/LogisticsNetwork/README.md` — active mod overview and build instructions.
 
 ## Current design decisions
 
@@ -49,8 +47,10 @@ These are already decided unless the operator says otherwise:
 Repo:
 - `/mnt/c/Users/Administrator/source/repos/7d2dmods`
 
-Original installed prototype:
-- `/mnt/d/Program Files (x86)/Steam/steamapps/common/7 Days To Die/Mods/AutoForge/`
+Active mod install target:
+- `/mnt/d/Program Files (x86)/Steam/steamapps/common/7 Days To Die/Mods/LogisticsNetwork/`
+
+If an old `Mods/AutoForge/` install exists, remove/disable it before testing Wasteland Logistics so the retired Auto Forge workstation does not appear in the creative menu.
 
 Vanilla game config source of truth:
 - `/mnt/d/Program Files (x86)/Steam/steamapps/common/7 Days To Die/Data/Config/`

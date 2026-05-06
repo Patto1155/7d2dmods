@@ -1,41 +1,18 @@
-# AutoForge
+# AutoForge Retired Prototype
 
-Automated crafting workstation mod for 7 Days to Die 1.x.
+This folder is retired legacy material from the first prototype.
 
-## Install Location
+Do not install this mod as active gameplay unless intentionally testing the old prototype. The old custom `Auto Forge` workstation is no longer part of the target design.
 
-```
-7 Days To Die\Mods\AutoForge\
-```
+Use the active mod instead:
 
-## Build
+- `mods/LogisticsNetwork/`
+- Player-facing name: `Wasteland Logistics`
 
-Requires .NET SDK 4.8 and the game installed at the default Steam path.
+Current design direction:
 
-```
-cd Source
-dotnet build AutoForge.csproj -c Release
-```
+- vanilla workstations remain vanilla
+- logistics conduits/connectors expose those vanilla blocks to the network
+- storage/workstation automation should be implemented in `mods/LogisticsNetwork/`
 
-Or from the mod root:
-
-```
-build.bat
-```
-
-The DLL lands at `Mods\AutoForge\AutoForge.dll`.
-
-## Testing In-Game
-
-1. Start a new creative game or load a save.
-2. Open the creative menu (U) and search "AutoForge" — you'll find the workstation and conduit blocks.
-3. Place the workstation, run conduit blocks to a storage crate.
-4. Open the workstation and queue any workbench recipe that you have ingredients for in the connected crates.
-5. Every 2 seconds the mod ticks: it will pull ingredients from crates, complete the craft, and push output back to the first crate with space.
-
-## Known Phase 1 Limitations
-
-- Single-player only. Multiplayer clients will not sync (NetPackages not implemented yet).
-- No custom UI. Uses the standard workbench window — the auto-pull happens silently in the background.
-- No power requirement. The workstation runs indefinitely without electricity.
-- Conduit model falls back to a simple shape if the pipe prefab path does not resolve in your install.
+The old AutoForge config files have been neutralized so this folder should not add `Auto Forge` creative-menu items from source-controlled XML.

@@ -5,7 +5,7 @@ Passive logistics-network milestone mod for 7 Days to Die.
 Internal assembly name: `LogisticsNetwork`
 Player-facing name: `Wasteland Logistics`
 
-This is a clean sibling of the legacy AutoForge prototype. It currently provides:
+This is the active replacement for the old AutoForge prototype. It uses vanilla workstations plus logistics blocks instead of adding a custom Auto Forge workstation. It currently provides:
 
 - mod metadata
 - Harmony entry point
@@ -44,6 +44,6 @@ The DLL is emitted to `Mods\LogisticsNetwork\LogisticsNetwork.dll`.
 
 ## Notes
 
-- This skeleton intentionally avoids touching `mods/AutoForge/` gameplay code.
-- Harmony and 7DTD managed references are copied from the verified AutoForge project pattern.
+- The old AutoForge prototype is retired; do not install it alongside this mod unless intentionally testing legacy behavior.
+- Harmony and 7DTD managed references follow the verified prototype project pattern.
 - Future gameplay work should stay passive until the logistics/network design is verified.

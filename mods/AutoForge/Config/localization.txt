@@ -1,5 +1,2 @@
-Key,File,Type,UsedInMainMenu,NoTranslate,english,german,latam,french,italian,japanese,koreana,polish,brazilian,russian,turkish,schinese,tchinese,spanish
-autoForgeWorkstation,blocks,Block,false,false,Auto Forge,,,,,,,,,,,,,
-autoForgeWorkstationDesc,blocks,Block,false,false,An automated crafting workstation. Connect storage crates via conduits to automatically pull ingredients and push output.,,,,,,,,,,,,,,
-autoForgeConduit,blocks,Block,false,false,Forge Conduit,,,,,,,,,,,,,
-autoForgeConduitDesc,blocks,Block,false,false,A pipe segment that forms the ingredient network between an Auto Forge workstation and connected storage crates.,,,,,,,,,,,,,,
+Key,File,Type,UsedInMainMenu,NoTranslate,english
+# AutoForge is retired. No gameplay localization entries are defined here.
