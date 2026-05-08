@@ -33,8 +33,11 @@ namespace LogisticsNetwork.Tick
             for (int i = 0; i < graphs.Count; i++)
             {
                 NetworkGraph graph = graphs[i];
-                Log.Out(graph.ToSummaryString(i + 1) + " topologyHash=" + TopologyFingerprint(graph));
-                LogStorageEndpoints(world, graph, i + 1);
+                int graphIndex = i + 1;
+                Log.Out(graph.ToSummaryString(graphIndex) + " topologyHash=" + TopologyFingerprint(graph));
+                LogStorageEndpoints(world, graph, graphIndex);
+                LogWorkstationEndpoints(world, graph, graphIndex);
+                LogConnectorSnapshots(world, graph, graphIndex);
             }
         }
 
@@ -46,6 +49,28 @@ namespace LogisticsNetwork.Tick
                     continue;
 
                 Log.Out(endpoint.ToLogString(graphIndex));
+            }
+        }
+
+        private static void LogWorkstationEndpoints(World world, NetworkGraph graph, int graphIndex)
+        {
+            foreach (Vector3i position in graph.Workstations)
+            {
+                if (!WorkstationEndpoint.TryDescribe(world, position, out NetworkEndpoint endpoint))
+                    continue;
+
+                Log.Out(endpoint.ToLogString(graphIndex));
+            }
+        }
+
+        private static void LogConnectorSnapshots(World world, NetworkGraph graph, int graphIndex)
+        {
+            foreach (Vector3i position in graph.Connectors)
+            {
+                if (!NetworkConnectorSnapshot.TryDescribe(world, position, out NetworkConnectorSnapshot snapshot))
+                    continue;
+
+                Log.Out(snapshot.ToLogString(graphIndex));
             }
         }
 

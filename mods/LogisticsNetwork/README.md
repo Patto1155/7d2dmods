@@ -14,9 +14,10 @@ This is the active replacement for the old AutoForge prototype. It uses vanilla 
 - logistics connector block (registry + scan; no routing UI or item IO yet)
 - reusable block registry, bootstrap retry with throttling, registry pruning against world blocks
 - BFS network scanner with depth-limit truncation reporting
-- passive `StorageEndpoint` / `NetworkEndpoint` snapshots for scanned storage positions (metadata + slot count log lines; no item movement)
 - minimal logging helper
 - config scaffolds for future routing, recipes, localization, and UI hooks
+
+**Inventory icons:** block defs use vanilla prefabs; you may see **no icon** for conduit/connector stacks until item/icon XML (or custom textures) are added (`docs/IMPLEMENTATION_CHECKLIST.md` Phase 3b).
 
 It does not yet move items, automate workstations, or replace vanilla workstation UIs. Multiplayer behavior is not verified.
 

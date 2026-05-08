@@ -1,13 +1,13 @@
 namespace LogisticsNetwork.Network
 {
     /// <summary>
-    /// Passive resolver for adjacent storage tile entities (<see cref="TileEntityLootContainer"/>).
+    /// Passive resolver for adjacent workstation tile entities.
     /// Exposes metadata only — no item movement.
     /// </summary>
-    public static class StorageEndpoint
+    public static class WorkstationEndpoint
     {
         /// <summary>
-        /// Builds a <see cref="NetworkEndpoint"/> snapshot for a storage graph node position.
+        /// Builds a <see cref="NetworkEndpoint"/> snapshot for a workstation graph node position.
         /// Returns false only when <paramref name="world"/> is null.
         /// </summary>
         public static bool TryDescribe(World world, Vector3i position, out NetworkEndpoint endpoint)
@@ -18,33 +18,26 @@ namespace LogisticsNetwork.Network
 
             if (!world.IsChunkAreaLoaded(position.x, position.y, position.z))
             {
-                endpoint = NetworkEndpoint.StorageUnresolved(world, position, "chunk_unloaded");
+                endpoint = NetworkEndpoint.WorkstationUnresolved(world, position, "chunk_unloaded");
                 return true;
             }
 
             TileEntity tileEntity = world.GetTileEntity(0, position);
             if (tileEntity == null)
             {
-                endpoint = new NetworkEndpoint(
-                    NetworkEndpointKind.Storage,
-                    position,
-                    chunkLoaded: true,
-                    isValid: false,
-                    typeName: "null_tile_entity",
-                    slotCount: null,
-                    detail: null);
-
+                endpoint = NetworkEndpoint.WorkstationUnresolved(world, position, "null_tile_entity");
                 return true;
             }
 
-            if (tileEntity is TileEntityLootContainer loot)
+            if (tileEntity is TileEntityWorkstation)
             {
-                endpoint = NetworkEndpoint.StorageResolved(loot, position, chunkLoaded: true);
+                string detail = WorkstationOutputProbe.Describe(tileEntity);
+                endpoint = NetworkEndpoint.WorkstationResolved(tileEntity, position, chunkLoaded: true, detail: detail);
                 return true;
             }
 
             endpoint = new NetworkEndpoint(
-                NetworkEndpointKind.Storage,
+                NetworkEndpointKind.Workstation,
                 position,
                 chunkLoaded: true,
                 isValid: false,

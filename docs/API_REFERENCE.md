@@ -194,29 +194,25 @@ Questions to verify:
 
 ### TileEntityLootContainer
 
-Status: Verified (partial, assembly reflection against local Steam `Assembly-CSharp.dll`; re-verify after major game updates)
+Status: Prototype
 
 Original network scan returned connected `TileEntityLootContainer` storage crates.
 
-Verified for passive metadata:
+**Compile-time note (not play-tested for every container variant):** the game assembly referenced by `mods/LogisticsNetwork/Source/LogisticsNetwork.csproj` exposes a public `items` field (array used for slot storage). `StorageEndpoint` / `NetworkEndpoint.StorageResolved` use `items != null` and `items.Length` for **read-only metadata** in logs only. Do not treat this as proof of safe mutation or multiplayer semantics.
 
-- Public instance property `items` returns `ItemStack[]` (slot capacity equals array length when non-null).
-- Runtime type name is suitable for logging adjacent storage endpoints.
-
-Still verify before any automated insert/extract:
+Questions to verify:
 
 - Which vanilla storage containers use this class?
-- How to safely read item slots beyond length / without corrupting state?
+- How to safely read item slots?
 - How to safely insert/extract item stacks?
 - Which method marks the tile entity dirty/modified?
 - What sync call is needed in multiplayer?
 
-### World chunk / tile entity queries (storage resolution)
+### World.IsChunkAreaLoaded
 
-Status: Verified (method signatures from assembly reflection)
+Status: Compile-verified (method exists on `World` in referenced `Assembly-CSharp`)
 
-- `World.IsChunkAreaLoaded(int blockPosX, int blockPosY, int blockPosZ)` returns whether the area is loaded for resolution.
-- `World.GetTileEntity(int, Vector3i)` — logistics code uses `GetTileEntity(0, position)` consistent with adjacent endpoint scans.
+`StorageEndpoint`, `WorkstationEndpoint`, and `NetworkConnectorSnapshot` gate reads on `world.IsChunkAreaLoaded(x, y, z)` before calling `GetTileEntity`. This reduces null/unloaded access; it does **not** guarantee the tile entity is fully initialized for mutation.
 
 ### TileEntityWorkstation
 

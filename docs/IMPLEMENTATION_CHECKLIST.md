@@ -194,13 +194,19 @@ Verification:
 - Conduit block can be placed and removed.
 - Log file shows no missing class errors.
 
+### Phase 3b: Item icons and inventory visibility
+
+Blocks defined with `Shape` `ModelEntity` and a prefab may show correctly when placed but have **no inventory icon** until item/icon data exists (e.g. `items.xml` / `CustomIcon` / Unity item definitions matching the block item).
+
+- [ ] Add item or icon definitions so conduit and connector stack icons render in player inventory and loot UIs.
+- [ ] Optionally add custom textures/icons per block for clearer differentiation.
+
 ## Phase 4: Implement network scanner
 
 - [x] Copy/refactor `ConduitNetwork.cs` into `Network/NetworkScanner.cs`.
 - [x] Generalize scanner to start from any logistics block, not only AutoForge workstation.
 - [x] Represent discovered network as `NetworkGraph`.
 - [x] Track conduit positions.
-- [ ] Track connector positions.
 - [x] Track adjacent storage endpoints.
 - [x] Track adjacent workstation endpoints.
 - [x] Track connector positions (registry + graph counts; traversed like conduits).
@@ -212,7 +218,7 @@ Verification:
 - [x] Report depth-limit truncation in graph summary; include topology hash in scan logs.
 - [ ] Add tests if a test harness can be created outside game runtime.
 - [x] Otherwise add a deterministic debug command/log path for in-game verification.
-- [x] Commit scanner milestone.
+- [ ] Commit scanner milestone.
 
 Verification:
 
@@ -232,8 +238,8 @@ Verification:
 - [x] Add connector recipe; other role blocks still future.
 - [x] Implement `LogisticsConnectorBlock.cs` shell (registers with network; scan treats it as a network node).
 - [ ] Implement role detection: connector/importer/exporter/filter.
-- [ ] Implement adjacent tile entity discovery.
-- [ ] Log adjacent block/entity type for verification.
+- [x] Implement passive adjacent context for connectors (`NetworkConnectorSnapshot` + tick logs).
+- [x] Log adjacent block/entity type for verification (connector snapshot lines).
 - [ ] Commit block design milestone.
 
 MVP recommendation:
@@ -249,18 +255,18 @@ Verification:
 
 ## Phase 6: Storage endpoint abstraction
 
-- [x] Create `NetworkEndpoint` snapshot model (`mods/LogisticsNetwork/Source/Network/NetworkEndpoint.cs`).
-- [x] Create `StorageEndpoint` passive resolver for `TileEntityLootContainer` (`StorageEndpoint.cs`).
-- [~] Implement read inventory slots (verified: `TileEntityLootContainer.items` is `ItemStack[]`; full read/move APIs still unverified for automation).
+- [x] Create passive `NetworkEndpoint` snapshot model (metadata for logs / future routing; not a live tile handle).
+- [x] Create `StorageEndpoint` resolver for `TileEntityLootContainer` (metadata only).
+- [x] Expose read-only slot count when `TileEntityLootContainer.items` is non-null (compile-time field; in-game correctness still verify).
 - [ ] Implement can-insert check.
 - [ ] Implement insert stack or partial stack.
 - [ ] Implement can-extract check.
 - [ ] Implement extract stack or partial stack.
 - [ ] Mark tile entity modified after mutations.
 - [ ] Add logs for item id/count moved.
-- [x] Add safeguards against null tile entities and unloaded chunks (`World.IsChunkAreaLoaded`, null `GetTileEntity`).
-- [x] Add logs proving storage nodes resolve (per-graph lines when topology snapshot changes).
-- [x] Commit storage endpoint milestone.
+- [x] Add safeguards against null tile entities and unloaded chunks (chunk gate + null TE logging).
+- [x] Add scan-tick logs that prove storage endpoints resolve (`StorageEndpoint` / `NetworkEndpoint.ToLogString`).
+- [ ] Commit storage endpoint milestone.
 
 Verification:
 

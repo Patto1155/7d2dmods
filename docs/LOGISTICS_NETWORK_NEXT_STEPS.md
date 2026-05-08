@@ -9,12 +9,14 @@ Completed locally and pushed:
 - `mods/LogisticsNetwork/` skeleton
 - conduit block
 - connector block (scan/registry shell; same passive behavior as conduits)
-- storage endpoint metadata wrapper (`StorageEndpoint` / `NetworkEndpoint`) with chunk/null guards and slot-count logging (no item IO)
 - registry pruning + throttled reflection bootstrap for empty-registry recovery
 - depth-limit truncation flag + topology hash in scan logs
 - registry + passive network scanner
+- passive `NetworkEndpoint` / `StorageEndpoint` resolution logs for scanned storage tiles; `WorkstationEndpoint` + `WorkstationOutputProbe` logs for workstation tiles; `NetworkConnectorSnapshot` logs for connector adjacency
 - 2-second tick loop
 - basic docs/checklist updates
+
+**Known UX gap:** conduit/connector items may appear **invisible in inventory** (stack count only) until `items.xml` / icon data is added — see checklist Phase 3b.
 
 The current implementation is intentionally passive/local-first and should not claim inventory automation or multiplayer support yet unless verified in-game.
 
@@ -32,9 +34,9 @@ The current implementation is intentionally passive/local-first and should not c
    - keep the MVP simple: one block role first, not a large UI system
 
 3. Storage endpoint support
-   - done (passive): resolve `TileEntityLootContainer`, log type + slot count, guard unloaded chunks / null TE
-   - next: read and mutate storage inventories safely once insert/extract APIs are verified
+   - read and mutate storage inventories safely
    - add insertion/extraction helpers
+   - guard against null tile entities and unloaded chunks
 
 4. Workstation endpoint support
    - identify vanilla workstations through the network
