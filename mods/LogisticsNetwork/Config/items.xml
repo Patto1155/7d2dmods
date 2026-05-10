@@ -1,0 +1,26 @@
+<configs>
+  <append xpath="/items">
+
+    <!-- Item-side icon definitions to ensure inventory/loot rendering. -->
+    <item name="logisticsConduit">
+      <property name="CustomIcon" value="resourceForgedIron"/>
+    </item>
+
+    <item name="logisticsConnector">
+      <property name="CustomIcon" value="resourceMechanicalParts"/>
+    </item>
+
+    <item name="logisticsImporter">
+      <property name="CustomIcon" value="resourceElectricParts"/>
+    </item>
+
+    <item name="logisticsExporter">
+      <property name="CustomIcon" value="resourceElectricParts"/>
+    </item>
+
+    <item name="logisticsFilter">
+      <property name="CustomIcon" value="resourcePaper"/>
+    </item>
+
+  </append>
+</configs>

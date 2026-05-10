@@ -198,8 +198,8 @@ Verification:
 
 Blocks defined with `Shape` `ModelEntity` and a prefab may show correctly when placed but have **no inventory icon** until item/icon data exists (e.g. `items.xml` / `CustomIcon` / Unity item definitions matching the block item).
 
-- [ ] Add item or icon definitions so conduit and connector stack icons render in player inventory and loot UIs.
-- [ ] Optionally add custom textures/icons per block for clearer differentiation.
+- [x] Add item or icon definitions so conduit and connector stack icons render in player inventory and loot UIs.
+- [~] Optionally add custom textures/icons per block for clearer differentiation (item-side icon XML added; custom art still pending).
 
 ## Phase 4: Implement network scanner
 
@@ -231,13 +231,13 @@ Verification:
 
 - [ ] Confirm operator decision C: UI strategy.
 - [x] Add `logisticsConnector` block XML.
-- [ ] Add `logisticsImporter` block XML if using separate role blocks.
-- [ ] Add `logisticsExporter` block XML if using separate role blocks.
-- [ ] Add `logisticsFilter` item/block XML if using filter modules.
+- [x] Add `logisticsImporter` block XML if using separate role blocks.
+- [x] Add `logisticsExporter` block XML if using separate role blocks.
+- [x] Add `logisticsFilter` item/block XML if using filter modules.
 - [x] Add localization for connector (importer/exporter/filter still future).
 - [x] Add connector recipe; other role blocks still future.
 - [x] Implement `LogisticsConnectorBlock.cs` shell (registers with network; scan treats it as a network node).
-- [ ] Implement role detection: connector/importer/exporter/filter.
+- [x] Implement role detection: connector/importer/exporter/filter (passive detection/logging done for all four roles).
 - [x] Implement passive adjacent context for connectors (`NetworkConnectorSnapshot` + tick logs).
 - [x] Log adjacent block/entity type for verification (connector snapshot lines).
 - [ ] Commit block design milestone.
@@ -258,12 +258,12 @@ Verification:
 - [x] Create passive `NetworkEndpoint` snapshot model (metadata for logs / future routing; not a live tile handle).
 - [x] Create `StorageEndpoint` resolver for `TileEntityLootContainer` (metadata only).
 - [x] Expose read-only slot count when `TileEntityLootContainer.items` is non-null (compile-time field; in-game correctness still verify).
-- [ ] Implement can-insert check.
-- [ ] Implement insert stack or partial stack.
-- [ ] Implement can-extract check.
+- [~] Implement can-insert check (passive occupancy-based diagnostic only; no live mutation yet).
+- [~] Implement insert stack or partial stack (experimental: one unit per tick via empty slot, `TryStackItem`, then `AddItem` when `EnableLiveStorageTransfer` is on; full merge/capacity matrix still unverified in-game).
+- [~] Implement can-extract check (passive occupancy-based diagnostic only; no live mutation yet).
 - [ ] Implement extract stack or partial stack.
-- [ ] Mark tile entity modified after mutations.
-- [ ] Add logs for item id/count moved.
+- [~] Mark tile entity modified after mutations (`SetModified` after guarded loot moves in `StorageTransfer`; MP sufficiency unverified).
+- [~] Add logs for item id/count moved (transfer OK line includes item name, slots, counts).
 - [x] Add safeguards against null tile entities and unloaded chunks (chunk gate + null TE logging).
 - [x] Add scan-tick logs that prove storage endpoints resolve (`StorageEndpoint` / `NetworkEndpoint.ToLogString`).
 - [ ] Commit storage endpoint milestone.
@@ -278,16 +278,17 @@ Verification:
 
 ## Phase 7: Basic item routing
 
-- [ ] Create `ItemRoutingService`.
-- [ ] Define route request: item id, count, source endpoint, destination constraints.
-- [ ] Implement scan of available sources.
-- [ ] Implement scan of valid destinations.
-- [ ] Implement priority convention; default higher number wins.
-- [ ] Implement overflow fallback.
-- [ ] Implement no-route behavior with clear logs.
-- [ ] Add simple whitelist/blacklist filter rule object.
-- [ ] Support `pull all matching` for importer.
-- [ ] Support `keep stock N` for exporter if easy; otherwise defer.
+- [~] Create `ItemRoutingService` (passive route-intent evaluator; pairing and summaries only). Passive route-plan `filterMode` mirrors `LogisticsNetworkFeatures.ItemTransferFilterMode` / ids via `ItemFilterRule.FromTransferFeatures()` (aligned with live transfer filtering).
+- [~] Experimental guarded loot moves (`StorageTransfer`): one item per tick, storage→storage route plans only; destination placement tries **empty slot → TryStackItem** (return tuple consulted; diagnostics on partial/absorb failure) **→ AddItem**; gated by `LogisticsNetworkFeatures.EnableLiveStorageTransfer` (default off).
+- [~] Define route request: item id, count, source endpoint, destination constraints (minimal passive request/report model added; item-specific constraints pending).
+- [~] Implement scan of available sources (passive importer source-candidate discovery in `ItemRoutingService`; item-specific checks pending).
+- [~] Implement scan of valid destinations (passive exporter destination-candidate discovery in `ItemRoutingService`; capacity checks pending).
+- [~] Implement priority convention; default higher number wins (passive default priorities + deterministic pairing implemented).
+- [~] Implement overflow fallback (passive overflow source/destination diagnostics logged when pairing is saturated).
+- [~] Implement no-route behavior with clear logs (passive route summary states implemented).
+- [~] Add simple whitelist/blacklist filter rule object (live transfers: `ItemFilterEvaluator` + `LogisticsNetworkFeatures.ItemTransferFilterMode` / `ItemTransferFilterIds`; per-block filter blocks still future UI).
+- [~] Support `pull all matching` for importer (passive routing option model + log output added; live transfer behavior pending).
+- [~] Support `keep stock N` for exporter if easy; otherwise defer (passive option model + log output added; enforcement pending).
 - [ ] Commit routing milestone.
 
 Verification:
@@ -300,17 +301,17 @@ Verification:
 ## Phase 8: Workstation endpoint discovery
 
 - [ ] Confirm operator decision F: storage first vs workstation first.
-- [ ] Identify vanilla workstation tile entity classes in game assemblies or runtime logs.
-- [ ] Update `docs/API_REFERENCE.md` with verified class names and fields.
-- [ ] Implement `WorkstationEndpoint` wrapper.
-- [ ] Detect campfire.
-- [ ] Detect forge.
-- [ ] Detect workbench.
-- [ ] Detect cement mixer.
-- [ ] Detect chemistry station.
-- [ ] Expose station type/crafting area.
+- [x] Identify vanilla workstation tile entity classes in game assemblies or runtime logs (`TileEntityWorkstation` for workbench/campfire/cement mixer/chemistry; `TileEntityForge` is separate).
+- [x] Update `docs/API_REFERENCE.md` with verified class names and fields (Output array, setModified, IsUserAccessing).
+- [x] Implement `WorkstationEndpoint` wrapper (passive resolver + reflection probe; `Output` array used by the live mover).
+- [~] Detect campfire (covered by `TileEntityWorkstation` cast; not yet exercised in-game per station type).
+- [ ] Detect forge (intentionally rejected — `TileEntityForge` has a different single-output layout; revisit as a separate slice).
+- [~] Detect workbench (covered by `TileEntityWorkstation` cast).
+- [~] Detect cement mixer (covered by `TileEntityWorkstation` cast).
+- [~] Detect chemistry station (covered by `TileEntityWorkstation` cast).
+- [x] Expose station type/crafting area (logged via `WorkstationOutputProbe` and stationType in transfer details).
 - [ ] Expose inventory slots if API allows.
-- [ ] Expose output slots if API allows.
+- [x] Expose output slots if API allows (`Output[]` consumed by `WorkstationOutputTransfer`).
 - [ ] Expose fuel/input/tool slots if API allows.
 - [ ] Commit workstation discovery milestone.
 
@@ -324,16 +325,24 @@ Verification:
 
 This is the safest first workstation automation feature.
 
-- [ ] Implement output-slot detection for one station type first, preferably workbench or campfire.
-- [ ] Add filter rule: crafted-products-only.
-- [ ] Importer touching station extracts only output items.
-- [ ] Do not remove inputs/fuel/tools.
-- [ ] Move extracted items into connected storage.
-- [ ] Mark station and destination storage modified.
-- [ ] Log exact slot/item/count moved.
-- [ ] Repeat for forge if slot layout differs.
-- [ ] Repeat for workbench/cement mixer/chemistry station.
+- [x] Implement output-slot detection for one station type first, preferably workbench or campfire (`WorkstationOutputTransfer` reads `TileEntityWorkstation.Output`).
+- [x] Add filter rule: crafted-products-only (implicit — only `Output[]` is read; inputs/fuel/tools are never inspected).
+- [x] Importer touching station extracts only output items (gated by `EnableLiveWorkstationOutputExtraction`, default off).
+- [x] Do not remove inputs/fuel/tools (no code path reads `Input` / `Fuel` / `Tools`).
+- [x] Move extracted items into connected storage (one unit per tick via `StorageTransfer.TryPlaceOneInDestination`).
+- [x] Mark station and destination storage modified (`workstation.setModified()` + `toLoot.SetModified()`).
+- [x] Log exact slot/item/count moved (`workstation outputExtract OK …` line includes `outSlot`, `countBefore`, `countAfter`, `placement`).
+- [ ] Repeat for forge if slot layout differs (`TileEntityForge` is rejected for now — single-stack output reservoir needs separate handling).
+- [~] Repeat for workbench/cement mixer/chemistry station (covered by the same `TileEntityWorkstation` cast; verify each in-game).
 - [ ] Commit output extraction milestone.
+
+Verification (runtime, SP):
+
+- Set `EnableLiveWorkstationOutputExtraction = true` in `Source/Network/LogisticsNetworkFeatures.cs`, rebuild, place importer connector against a workbench output side and exporter against a chest, finish a craft.
+- Expect a `workstation outputExtract OK graph=… stationType=TileEntityWorkstation item=…` line and the chest to gain one item per 2-second tick.
+- Confirm input / fuel / tool slots and `Queue[]` are untouched after several ticks.
+- Open the station UI: extraction should pause with `skip:workstation_user_accessing` while the UI is open.
+- Save/reload mid-extraction: counts must match logs; no duplication or loss.
 
 Verification:
 
@@ -515,6 +524,8 @@ Verification:
 - [ ] Commit docs milestone.
 
 ## Phase 19: Final acceptance criteria
+
+> Snapshot-style progress notes (informal): `docs/LOGISTICS_NETWORK_NEXT_STEPS.md` (“Phase 19 snapshot”). Formal acceptance remains the checkboxes below.
 
 The redesign is “implemented” when:
 

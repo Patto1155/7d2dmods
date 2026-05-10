@@ -94,7 +94,7 @@ Responsibilities:
 
 Possible names:
 
-- Network Connector
+- Network Connector ********LET'S GO WITH THIS - patrick
 - Workstation Connector
 - Storage Connector
 - Logistics Port

@@ -6,6 +6,7 @@
       <property name="Material" value="Mmetal_weak"/>
       <property name="Group" value="Building,Basics"/>
       <property name="DescriptionKey" value="logisticsConduitDesc"/>
+      <property name="CustomIcon" value="resourceForgedIron"/>
       <property name="Shape" value="ModelEntity"/>
       <property name="Model" value="@:Entities/Industrial/conduitPipeMetal_05Prefab.prefab"/>
       <property name="Stacknumber" value="200"/>
@@ -17,10 +18,47 @@
       <property name="Material" value="Mmetal_weak"/>
       <property name="Group" value="Building,Basics"/>
       <property name="DescriptionKey" value="logisticsConnectorDesc"/>
+      <property name="CustomIcon" value="resourceMechanicalParts"/>
       <property name="Shape" value="ModelEntity"/>
       <property name="Model" value="@:Entities/Industrial/conduitPipeMetal_05Prefab.prefab"/>
       <property name="Stacknumber" value="64"/>
       <property name="EconomicValue" value="25"/>
+    </block>
+
+    <block name="logisticsImporter">
+      <property name="Class" value="LogisticsNetwork.Blocks.LogisticsImporterBlock, LogisticsNetwork"/>
+      <property name="Material" value="Mmetal_weak"/>
+      <property name="Group" value="Building,Basics"/>
+      <property name="DescriptionKey" value="logisticsImporterDesc"/>
+      <property name="CustomIcon" value="resourceElectricParts"/>
+      <property name="Shape" value="ModelEntity"/>
+      <property name="Model" value="@:Entities/Industrial/conduitPipeMetal_05Prefab.prefab"/>
+      <property name="Stacknumber" value="64"/>
+      <property name="EconomicValue" value="35"/>
+    </block>
+
+    <block name="logisticsExporter">
+      <property name="Class" value="LogisticsNetwork.Blocks.LogisticsExporterBlock, LogisticsNetwork"/>
+      <property name="Material" value="Mmetal_weak"/>
+      <property name="Group" value="Building,Basics"/>
+      <property name="DescriptionKey" value="logisticsExporterDesc"/>
+      <property name="CustomIcon" value="resourceElectricParts"/>
+      <property name="Shape" value="ModelEntity"/>
+      <property name="Model" value="@:Entities/Industrial/conduitPipeMetal_05Prefab.prefab"/>
+      <property name="Stacknumber" value="64"/>
+      <property name="EconomicValue" value="35"/>
+    </block>
+
+    <block name="logisticsFilter">
+      <property name="Class" value="LogisticsNetwork.Blocks.LogisticsFilterBlock, LogisticsNetwork"/>
+      <property name="Material" value="Mmetal_weak"/>
+      <property name="Group" value="Building,Basics"/>
+      <property name="DescriptionKey" value="logisticsFilterDesc"/>
+      <property name="CustomIcon" value="resourcePaper"/>
+      <property name="Shape" value="ModelEntity"/>
+      <property name="Model" value="@:Entities/Industrial/conduitPipeMetal_05Prefab.prefab"/>
+      <property name="Stacknumber" value="64"/>
+      <property name="EconomicValue" value="40"/>
     </block>
 
   </append>

@@ -113,7 +113,10 @@ namespace LogisticsNetwork.Network
         private static bool IsConnectorAtWorldPosition(World world, Vector3i position)
         {
             Block block = world.GetBlock(position).Block;
-            return block is LogisticsConnectorBlock;
+            return block is LogisticsConnectorBlock ||
+                   block is LogisticsImporterBlock ||
+                   block is LogisticsExporterBlock ||
+                   block is LogisticsFilterBlock;
         }
 
         public static void Clear()

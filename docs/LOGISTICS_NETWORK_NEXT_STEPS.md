@@ -8,35 +8,32 @@ Completed locally and pushed:
 
 - `mods/LogisticsNetwork/` skeleton
 - conduit block
-- connector block (scan/registry shell; same passive behavior as conduits)
+- connector block plus **importer**, **exporter**, and **filter** role blocks (XML/recipes/localization; scan + passive routing; filter block is policy placeholder until wired)
 - registry pruning + throttled reflection bootstrap for empty-registry recovery
 - depth-limit truncation flag + topology hash in scan logs
 - registry + passive network scanner
 - passive `NetworkEndpoint` / `StorageEndpoint` resolution logs for scanned storage tiles; `WorkstationEndpoint` + `WorkstationOutputProbe` logs for workstation tiles; `NetworkConnectorSnapshot` logs for connector adjacency
+- **Passive routing:** `ItemRoutingService` pairs importer→exporter connectors (deterministic priority + coordinates); route-plan `filterMode` mirrors `LogisticsNetworkFeatures.ItemTransferFilterMode` / ids (same semantics as live transfer filters).
+- **Experimental live storage→storage transfer** (default **off**): `LogisticsNetworkFeatures.EnableLiveStorageTransfer` — at most one item per tick; importer adjacent to source chest, exporter adjacent to dest chest; placement empty → `TryStackItem` (tuple interpreted + logged on failure) → `AddItem`; richer `skip:*` reasons when placement fails.
+- **Experimental workstation output extraction** (default **off**): `LogisticsNetworkFeatures.EnableLiveWorkstationOutputExtraction` — pulls one unit per tick from `TileEntityWorkstation.Output` (workbench / campfire / cement mixer / chemistry) into a destination chest; reuses the storage placement contract; pauses while a player has the station UI open (`skip:workstation_user_accessing`); rejects `TileEntityForge` until its single-stack output is verified separately. Inputs / fuel / tools are never read or written.
 - 2-second tick loop
 - basic docs/checklist updates
 
-**Known UX gap:** conduit/connector items may appear **invisible in inventory** (stack count only) until `items.xml` / icon data is added — see checklist Phase 3b.
+**Inventory icons:** addressed for MVP via `Config/items.xml` + block `CustomIcon` (Phase 3b largely done; custom art still optional).
 
 The current implementation is intentionally passive/local-first and should not claim inventory automation or multiplayer support yet unless verified in-game.
 
 ## Immediate next milestones
 
-1. Harden the scanner/bootstrap path
-   - avoid one-shot bootstrap failure if the first scan happens before the world is ready
+1. **Validate experimental storage transfer in SP** (then dedicated server): enable live transfer, whitelist a test item, confirm logs and no dup/loss across save/reload.
+
+1b. **Validate experimental workstation output extraction in SP**: enable `EnableLiveWorkstationOutputExtraction`, place importer beside workbench/campfire/cement mixer/chemistry, finish a craft, confirm only `Output[]` is moved, inputs/fuel/tools/queue are intact, and that opening the station UI pauses extraction with `skip:workstation_user_accessing`. Check save/reload for dup/loss. Forge is intentionally skipped at this slice.
+
+2. Harden the scanner/bootstrap path (ongoing)
    - prune or verify registry entries against world state
-   - make graph snapshots reflect real topology changes, not just counts
    - keep scan output stable and easy to compare in logs
 
-2. Add connector abstraction
-   - define the endpoint layer that touches vanilla blocks
-   - separate conduits from connectors conceptually
-   - keep the MVP simple: one block role first, not a large UI system
-
-3. Storage endpoint support
-   - read and mutate storage inventories safely
-   - add insertion/extraction helpers
-   - guard against null tile entities and unloaded chunks
+3. Storage endpoint support (partial — live chest→chest exists behind flag; overflow routing & multi-route reliability still open)
 
 4. Workstation endpoint support
    - identify vanilla workstations through the network
@@ -73,7 +70,11 @@ The current implementation is intentionally passive/local-first and should not c
 - A fixed scan-depth cap can truncate large networks; truncation is surfaced via `truncatedDepth=Y` on the graph summary when hit.
 - Registry entries are pruned against live world blocks to reduce phantom nodes when removal events were missed.
 - Tick snapshots hash sorted conduit/connector/storage/workstation positions so topology changes log even when counts stay the same.
-- Connectors exist as a first-class scanned node (`logisticsConnector`); importer/exporter/filter roles remain future work.
+- Connectors exist as first-class scanned nodes; **importer** / **exporter** / **filter** blocks are implemented as distinct block types with passive routing roles (`NetworkConnectorSnapshot.Role`). Live moves only run for storage↔storage pairs with importer at source connector and exporter at destination connector.
+
+## Phase 19 snapshot (not acceptance)
+
+Full checklist: `docs/IMPLEMENTATION_CHECKLIST.md` Phase 19. Rough progress: scaffold + passive scan/logs are strong; **reliable** sorting, workstation I/O, recipe-driven behavior, MP verification, and dup/loss sign-off remain ahead. Treat percentages in chat as informal unless tied to checklist rows.
 
 ## Guardrails for future work
 

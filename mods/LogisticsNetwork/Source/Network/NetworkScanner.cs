@@ -170,7 +170,7 @@ namespace LogisticsNetwork.Network
                 return;
             }
 
-            if (block is LogisticsConnectorBlock)
+            if (block is LogisticsConnectorBlock || block is LogisticsImporterBlock || block is LogisticsExporterBlock || block is LogisticsFilterBlock)
             {
                 NetworkRegistry.RegisterConnector(position);
             }
@@ -348,7 +348,7 @@ namespace LogisticsNetwork.Network
                 return;
             }
 
-            if (block is LogisticsConnectorBlock)
+            if (block is LogisticsConnectorBlock || block is LogisticsImporterBlock || block is LogisticsExporterBlock || block is LogisticsFilterBlock)
             {
                 graph.AddConnector(position);
             }
@@ -360,7 +360,11 @@ namespace LogisticsNetwork.Network
                 return true;
 
             Block block = world.GetBlock(position).Block;
-            return block is LogisticsConduitBlock || block is LogisticsConnectorBlock;
+            return block is LogisticsConduitBlock ||
+                   block is LogisticsConnectorBlock ||
+                   block is LogisticsImporterBlock ||
+                   block is LogisticsExporterBlock ||
+                   block is LogisticsFilterBlock;
         }
 
         private static bool TryGetEndpointKind(World world, Vector3i position, out NetworkEndpointKind kind)

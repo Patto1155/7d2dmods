@@ -25,6 +25,7 @@ namespace LogisticsNetwork.Network
             bool chunkLoaded,
             bool isValid,
             string blockTypeName,
+            string role,
             bool hasAttachment,
             Vector3i attachmentPosition,
             string attachmentKind,
@@ -37,6 +38,7 @@ namespace LogisticsNetwork.Network
             ChunkLoaded = chunkLoaded;
             IsValid = isValid;
             BlockTypeName = blockTypeName ?? string.Empty;
+            Role = string.IsNullOrEmpty(role) ? "connector" : role;
             HasAttachment = hasAttachment;
             AttachmentPosition = attachmentPosition;
             AttachmentKind = string.IsNullOrEmpty(attachmentKind) ? "none" : attachmentKind;
@@ -53,6 +55,8 @@ namespace LogisticsNetwork.Network
         public bool IsValid { get; }
 
         public string BlockTypeName { get; }
+
+        public string Role { get; }
 
         public bool HasAttachment { get; }
 
@@ -83,8 +87,9 @@ namespace LogisticsNetwork.Network
                 snapshot = new NetworkConnectorSnapshot(
                     position,
                     chunkLoaded: false,
-                    isValid: block is LogisticsConnectorBlock,
+                    isValid: IsConnectorFamilyBlock(block),
                     blockTypeName: blockTypeName,
+                    role: DescribeConnectorRole(block),
                     hasAttachment: false,
                     attachmentPosition: default(Vector3i),
                     attachmentKind: "chunk_unloaded",
@@ -130,8 +135,9 @@ namespace LogisticsNetwork.Network
             snapshot = new NetworkConnectorSnapshot(
                 position,
                 chunkLoaded: true,
-                isValid: block is LogisticsConnectorBlock,
+                isValid: IsConnectorFamilyBlock(block),
                 blockTypeName: blockTypeName,
+                role: DescribeConnectorRole(block),
                 hasAttachment: hasAttachment,
                 attachmentPosition: attachmentPosition,
                 attachmentKind: attachmentKind,
@@ -150,6 +156,7 @@ namespace LogisticsNetwork.Network
               .Append(" chunkLoaded=").Append(ChunkLoaded ? "Y" : "N")
               .Append(" valid=").Append(IsValid ? "Y" : "N")
               .Append(" type=").Append(BlockTypeName)
+              .Append(" role=").Append(Role)
               .Append(" attached=");
 
             if (HasAttachment)
@@ -180,7 +187,7 @@ namespace LogisticsNetwork.Network
             if (tileEntity != null)
                 return 2;
 
-            if (block is LogisticsConduitBlock || block is LogisticsConnectorBlock)
+            if (block is LogisticsConduitBlock || IsConnectorFamilyBlock(block))
                 return 1;
 
             return block != null ? 0 : -1;
@@ -200,7 +207,7 @@ namespace LogisticsNetwork.Network
             if (block is LogisticsConduitBlock)
                 return "conduit";
 
-            if (block is LogisticsConnectorBlock)
+            if (IsConnectorFamilyBlock(block))
                 return "connector";
 
             return block != null ? block.GetType().Name : "air";
@@ -209,6 +216,28 @@ namespace LogisticsNetwork.Network
         private static string DescribeBlock(Block block)
         {
             return block != null ? block.GetType().Name : "null_block";
+        }
+
+        private static bool IsConnectorFamilyBlock(Block block)
+        {
+            return block is LogisticsConnectorBlock ||
+                   block is LogisticsImporterBlock ||
+                   block is LogisticsExporterBlock ||
+                   block is LogisticsFilterBlock;
+        }
+
+        private static string DescribeConnectorRole(Block block)
+        {
+            if (block is LogisticsImporterBlock)
+                return "importer";
+
+            if (block is LogisticsExporterBlock)
+                return "exporter";
+
+            if (block is LogisticsFilterBlock)
+                return "filter";
+
+            return "connector";
         }
 
         private static string DescribeTileEntity(TileEntity tileEntity)

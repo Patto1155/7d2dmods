@@ -194,19 +194,28 @@ Questions to verify:
 
 ### TileEntityLootContainer
 
-Status: Prototype
+Status: Prototype + **reflection-verified surface** (game DLL inspection, not full in-game matrix)
 
 Original network scan returned connected `TileEntityLootContainer` storage crates.
 
-**Compile-time note (not play-tested for every container variant):** the game assembly referenced by `mods/LogisticsNetwork/Source/LogisticsNetwork.csproj` exposes a public `items` field (array used for slot storage). `StorageEndpoint` / `NetworkEndpoint.StorageResolved` use `items != null` and `items.Length` for **read-only metadata** in logs only. Do not treat this as proof of safe mutation or multiplayer semantics.
+**Compile-time note (not play-tested for every container variant):** the game assembly referenced by `mods/LogisticsNetwork/Source/LogisticsNetwork.csproj` exposes a public `items` property (`ItemStack[]`). `StorageEndpoint` / `NetworkEndpoint.StorageResolved` use `items != null` and `items.Length` for **read-only metadata** in logs only.
+
+**Reflection-verified on referenced `Assembly-CSharp` (inspect local install if names drift):**
+
+- Public property `items` → `ItemStack[]`
+- `Void UpdateSlot(Int32, ItemStack)`
+- `Boolean AddItem(ItemStack)`
+- `ValueTuple<Boolean,Boolean> TryStackItem(Int32, ItemStack)`
+- `Void SetModified()`
+- Private backing field name in some builds: `itemsArr` (prefer the public `items` API)
+
+Live mutation is implemented only behind `LogisticsNetworkFeatures.EnableLiveStorageTransfer` in `StorageTransfer.TryMoveOneStackUnit` (one unit per tick). Placement order: `UpdateSlot` into first empty slot, else `TryStackItem` until the transient stack’s `count` reaches `0`, else `AddItem`. `TryStackItem` returns `ValueTuple<Boolean,Boolean>`; the mover treats success as **`chunk.count == 0`** after the call (full absorption of the transient one-count stack). On placement failure, logs may include both tuple components (`stackOk` / `stackPartial`) plus slot index and remaining count for diagnosis. **In-game correctness for full containers, partial merges, and multiplayer replication is not fully verified** — keep mutation gated on `World.IsRemote()` when `LogisticsNetworkFeatures.RespectWorldIsRemote` is true.
 
 Questions to verify:
 
 - Which vanilla storage containers use this class?
-- How to safely read item slots?
-- How to safely insert/extract item stacks?
-- Which method marks the tile entity dirty/modified?
-- What sync call is needed in multiplayer?
+- Full matrix: stacking, partial moves, locked slots, and dedicated-server behavior.
+- What sync path is required beyond `SetModified` for clients.
 
 ### World.IsChunkAreaLoaded
 
@@ -214,44 +223,71 @@ Status: Compile-verified (method exists on `World` in referenced `Assembly-CShar
 
 `StorageEndpoint`, `WorkstationEndpoint`, and `NetworkConnectorSnapshot` gate reads on `world.IsChunkAreaLoaded(x, y, z)` before calling `GetTileEntity`. This reduces null/unloaded access; it does **not** guarantee the tile entity is fully initialized for mutation.
 
+### World.IsRemote
+
+Status: Compile-verified (instance method `Boolean IsRemote()` on `World` in referenced `Assembly-CSharp`)
+
+`StorageTransfer` and `LogisticsNetworkTick` skip inventory mutation when `world.IsRemote()` is true and `LogisticsNetworkFeatures.RespectWorldIsRemote` is enabled — intended to avoid mutating containers from a multiplayer **client**. Confirm behavior on dedicated server + client in your game version.
+
 ### TileEntityWorkstation
 
-Status: Suspected/Unknown
+Status: **Reflection-verified surface** on referenced `Assembly-CSharp` (re-verify on game version drift).
 
-Likely relevant for forge/workbench/campfire/etc.
+Backs vanilla **workbench, campfire, cement mixer, chemistry station**. Verified shape (instance members):
 
-Questions to verify:
+- `ItemStack[] input` (property `Input`) — input slots; never read/written by extraction.
+- `ItemStack[] fuel` (property `Fuel`), `ItemStack[] tools` (property `Tools`) — never read/written by extraction.
+- `ItemStack[] output` (property `Output`) — completed crafted items live here.
+- `RecipeQueueItem[] queue` (property `Queue`); `bool IsCrafting`, `bool IsBurning`, `bool OutputEmpty()`.
+- `void setModified()` (lowercase, on this class) — propagates UI/sync after slot mutation.
+- `Boolean IsUserAccessing()` (inherited from `TileEntity`) — true while a player has the station UI open.
 
-- Exact class name(s) in 7DTD V2.6.
-- How each station stores input slots.
-- How each station stores output slots.
-- How fuel/tool slots are represented.
-- How crafting queue is represented.
-- How to start/enqueue a recipe programmatically.
-- How to detect completed output.
-- How to avoid touching fuel/tools/inputs during output extraction.
+**Forge is NOT a `TileEntityWorkstation`.** `TileEntityForge` is its own `TileEntity` subclass with a single `ItemStack output` (not array) plus internal `inputMetal` / `outputItem` / `outputWeight` for the smelter reservoir. `WorkstationOutputTransfer` casts to `TileEntityWorkstation` and rejects forges with `skip:source_not_workstation type=TileEntityForge`. Treat forge extraction as a separate slice when it is needed.
+
+**Used by:** `mods/LogisticsNetwork/Source/Network/WorkstationOutputTransfer.cs`. The mover:
+
+1. Resolves source connector (`importer`) attachment as `TileEntityWorkstation`; rejects other types.
+2. Returns `skip:workstation_user_accessing` while `IsUserAccessing()` — avoids racing the player UI.
+3. Walks `Output[]`, takes the first non-empty stack that passes the global transfer filter.
+4. Places one unit into the destination `TileEntityLootContainer` via `StorageTransfer.TryPlaceOneInDestination` (empty → `TryStackItem` → `AddItem`).
+5. Decrements/clears the source slot in place, then calls `workstation.setModified()` and `toLoot.SetModified()`.
+
+**Still to verify in-game:** dedicated-server replication, behavior while `Queue` is mid-craft, partial stack edge cases on real workstation outputs, and whether `setModified()` alone refreshes an already-open station UI on a remote client.
+
+Open questions for later phases:
+
+- How to start/enqueue a recipe programmatically (Phase 12).
+- Per-station semantics for input feeding (Phase 10) — slot ordering, max stack, ingredient overlap.
+- Forge extraction (`outputItem` / `output` single-stack flow).
 
 ### ItemStack / ItemValue / inventory classes
 
-Status: Suspected/Unknown
+Status: **Partially verified** (reflection on referenced `Assembly-CSharp`)
 
-Questions to verify:
+Verified:
 
-- Exact constructors/factory methods for item stacks.
-- How item ids map to `ItemValue`.
-- How stack counts are stored.
-- How max stack sizes are checked.
-- How partial stack insertion works.
-- How to clone/copy stacks safely.
+- `ItemStack` public fields: `ItemValue itemValue`, `Int32 count`
+- `ItemStack` instance methods include: `Clone()`, `Clear()`, `IsEmpty()` (method, not property), `CanStackWith`, etc.; slot commits use `TileEntityLootContainer.UpdateSlot`
+- `ItemValue` exposes `ItemClass` / `ItemClassOrMissing`; `ItemClass.Name` is useful for logs
+
+Still verify in-game:
+
+- `AddItem` / `TryStackItem` semantics (partial acceptance, remainder handling).
+- Max stack enforcement when merging.
+
+### Wasteland Logistics: transfer filter ids
+
+Status: Mod-internal convention
+
+`StorageTransfer` filters source slots using `ItemFilterEvaluator` + `LogisticsNetworkFeatures.ItemTransferFilterMode` / `ItemTransferFilterIds`. Ids are matched against `ItemClass.Name` (internal item names such as `resourceWood`), case-insensitive. Per-block filter UI is not implemented; lists are set in code only until connector/filter persistence exists.
 
 ### SetModified / sync
 
-Status: Suspected/Unknown
+Status: **Partially verified** — `Void SetModified()` exists on `TileEntity` / `TileEntityLootContainer` in referenced `Assembly-CSharp`; `StorageTransfer` calls it after slot updates.
 
 Questions to verify:
 
-- Exact method to call after mutating a tile entity.
-- Whether local single-player and server use same path.
+- Whether `SetModified` alone is sufficient for multiplayer replication of loot changes.
 - Whether clients require NetPackage updates for connector config.
 
 ## Runtime verification checklist for API facts

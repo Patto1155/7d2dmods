@@ -12,5 +12,23 @@
       <ingredient name="resourceElectricParts" count="1"/>
     </recipe>
 
+    <recipe name="logisticsImporter" count="1" craft_area="workbench" craft_time="10">
+      <ingredient name="logisticsConnector" count="1"/>
+      <ingredient name="resourceMechanicalParts" count="1"/>
+      <ingredient name="resourceElectricParts" count="2"/>
+    </recipe>
+
+    <recipe name="logisticsExporter" count="1" craft_area="workbench" craft_time="10">
+      <ingredient name="logisticsConnector" count="1"/>
+      <ingredient name="resourceMechanicalParts" count="1"/>
+      <ingredient name="resourceElectricParts" count="2"/>
+    </recipe>
+
+    <recipe name="logisticsFilter" count="1" craft_area="workbench" craft_time="8">
+      <ingredient name="resourcePaper" count="5"/>
+      <ingredient name="resourceScrapPolymers" count="2"/>
+      <ingredient name="resourceElectricParts" count="1"/>
+    </recipe>
+
   </append>
 </configs>
